@@ -7,6 +7,9 @@ class Icontrol_struct: public Inode{
 
 public:
 
+    Icontrol_struct* get_next(){ return next_struct; }
+    void add_control_struct(Icontrol_struct* new_struct); //тоже пробрасывает через цепочку, но теперь через control_struct
+
     virtual void print_graphviz(FILE* outp_file);
     virtual Inode* copy_tree() const;
     virtual ~Icontrol_struct(){};
@@ -30,6 +33,8 @@ class Overload_set final: public Icontrol_struct{
 
 public:
 
+    void add_operator(Overload_op* new_op); //должен прокидывать эту ссылку через цепочку операторов(first_overload)
+    bool add_name(char* name);
     Overload_set* copy_tree() const;
 };
 
@@ -45,11 +50,14 @@ public:
 class Statement final: public Icontrol_struct{
 
     char* statment_name = nullptr;
-    Initialization_prot* arr_of_vars = nullptr;
+    Initialization_list init_list;
     Icontent_of_statement* first_expr = nullptr;
 
 public:
 
+    bool add_first_expr(Icontent_of_statement* new_first_expr);
+    bool add_init_list(Initialization_list new_init_list);
+    bool add_name(char* name);
     Statement* copy_tree() const;
 };
 

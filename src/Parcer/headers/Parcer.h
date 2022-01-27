@@ -13,6 +13,7 @@ enum Lexem_type{
 struct lexem{
 
     char* lexem = nullptr;
+    int line_number = 0;
     int size = 0;
     int type = 0;
 };

@@ -40,11 +40,13 @@ int Parcer::parse_file(FILE* input_file, std::list<lexem>& list_of_lexem){
 
     char buff[SIZE_OF_BUF] = "";
     char sub_buff[SIZE_OF_BUF] = "";
-    int buff_size = 0, lexem_size = 0, buff_begin = 0, num_of_lexems = 0;
+    int buff_size = 0, lexem_size = 0, buff_begin = 0, num_of_lexems = 0, cur_line = 0;
 
     while ((buff_size = fread(buff + buff_begin, 1, SIZE_OF_BUF - buff_begin, input_file)) > 0){
 
         for (int i = 0; i < buff_size + buff_begin; i++){
+
+            if (buff[i] == '\n'){ cur_line++; }
 
             if (find_in_separs(buff[i])){
 
@@ -54,6 +56,7 @@ int Parcer::parse_file(FILE* input_file, std::list<lexem>& list_of_lexem){
                     new_lexem.lexem = new char[lexem_size + 1];
                     new_lexem.size = lexem_size + 1;
                     new_lexem.type = info;
+                    new_lexem.line_number = cur_line;
 
                     memcpy(new_lexem.lexem, buff + i - lexem_size, lexem_size);
                     new_lexem.lexem[lexem_size] = '\0';
@@ -68,6 +71,7 @@ int Parcer::parse_file(FILE* input_file, std::list<lexem>& list_of_lexem){
                     new_separ.lexem = new char[2];
                     new_separ.size = 2;
                     new_separ.type = separ;
+                    new_separ.line_number = cur_line;
 
                     new_separ.lexem[0] = buff[i];
                     new_separ.lexem[1] = '\0';
@@ -105,6 +109,7 @@ int Parcer::parse_file(FILE* input_file, std::list<lexem>& list_of_lexem){
         new_lexem.lexem = new char[lexem_size + 1];
         new_lexem.size = lexem_size + 1;
         new_lexem.type = info;
+        new_lexem.line_number = cur_line;
 
         memcpy(new_lexem.lexem, buff, lexem_size);
         new_lexem.lexem[lexem_size] = '\0';

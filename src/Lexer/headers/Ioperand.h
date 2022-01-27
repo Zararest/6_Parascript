@@ -17,8 +17,8 @@ class Var final: public Ioperand{
 
 public:
 
+    Var(char* new_name, bool is_inner); //тут без копирования имени
     Var* copy_tree() const;
-
 };
 
 class Num final: public Ioperand{
@@ -27,6 +27,7 @@ class Num final: public Ioperand{
 
 public:
 
+    Num(double new_value);
     Num* copy_tree() const;
 };
 
