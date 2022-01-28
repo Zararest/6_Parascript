@@ -23,9 +23,19 @@ protected:
 
 public:
 
-    void add_control_struct(Icontrol_struct* new_struct); //тоже пробрасывает через цепочку, но теперь через control_struct
+    void add_control_struct(Icontrol_struct* new_struct){   //тоже пробрасывает через цепочку, но теперь через control_struct
 
-    virtual void print_graphviz() const;
+        if (next_struct != nullptr){
+
+            next_struct->add_control_struct(next_struct);
+        } else{
+
+            next_struct = new_struct;
+        }
+    } 
+
+    virtual void print_graphviz() const = 0;
+
     virtual ~Icontrol_struct(){
 
         delete next_struct;
@@ -41,15 +51,9 @@ class Overload_op final: public Icontrol_struct{
 
 public:
 
-    void print_graphviz() const override;
+    void print_graphviz() const override{};
     Overload_op* copy_tree() const;
 };
-
-void Overload_op::print_graphviz() const{
-
-    FILE* out_file = fopen(GRAPH_PATH, "a");
-
-}
 
 class Overload_set final: public Icontrol_struct{
 
@@ -58,9 +62,9 @@ class Overload_set final: public Icontrol_struct{
 
 public:
 
-    void add_operator(Overload_op* new_op); //должен прокидывать эту ссылку через цепочку операторов(first_overload)
-    bool add_name(char* name);
-    Overload_set* copy_tree() const;
+    void add_operator(Overload_op* new_op){ } //должен прокидывать эту ссылку через цепочку операторов(first_overload)
+    bool add_name(char* name){ return false; }
+    void print_graphviz() const override{}
 };
 
 class Use final: public Icontrol_struct{
@@ -73,15 +77,6 @@ public:
 };
 //потом
 
-void print_type(FILE* out_file, DataType type){
-
-    if (type == T_char){ fprintf(out_file, "char"); }
-    if (type == T_int){ fprintf(out_file, "int"); }
-    if (type == T_float){ fprintf(out_file, "float"); }
-    if (type == T_arr){ fprintf(out_file, "arr"); }
-    if (type == T_expr){ fprintf(out_file, "expr"); }
-}
-
 class Statement final: public Icontrol_struct{
 
     char* statement_name = nullptr;
@@ -92,21 +87,45 @@ public:
 
     ~Statement(){
 
-        for (int i = 0; i < init_list.num_of_vars; i++){
-
-            delete[] init_list.list_of_vars[i].name;
-        }
-
-        delete init_list.list_of_vars;
+        delete_initial_list(init_list);
         delete[] statement_name;
         delete first_expr;
     }
 
-    bool add_first_expr(Icontent_of_statement* new_first_expr);
-    bool add_init_list(Initialization_list new_init_list);
-    bool add_name(char* name);
+    bool add_first_expr(Icontent_of_statement* new_first_expr){
 
-    //Statement* copy_tree() const;
+        if (new_first_expr == nullptr){ return false; }
+
+        delete first_expr;
+        first_expr = new_first_expr;
+
+        return true;
+    }
+
+/**
+ * @brief Всегда возвращает true.
+ * 
+ * @param new_init_list 
+ * @return true 
+ * @return false 
+ */
+    bool add_init_list(Initialization_list new_init_list){
+
+        delete_initial_list(init_list);
+        new_init_list = init_list;
+
+        return true;
+    }
+
+    bool add_name(char* name){
+
+        if (name == nullptr){ return false; }
+
+        delete[] statement_name;
+        statement_name = name;
+
+        return true;
+    }
 
     void print_graphviz() const override{
 

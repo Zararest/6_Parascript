@@ -6,6 +6,8 @@
 Icontrol_struct* Lexer::get_syntax_tree(){
 
     root = get_block_of_code();
+
+    return root;
 }
 
 /**
@@ -55,14 +57,14 @@ bool Lexer::check_end_of_tokens(){
     return true;
 }
 
-void Lexer::error(char* message){
+void Lexer::error(const char* message){
 
     if (cur_pos == tokens.end()){
 
-        fprintf(stderr, "Error:%s [end of file]\n");
+        fprintf(stderr, "Error:%s [end of file]\n", message);
     } else{
 
-        fprintf(stderr, "Error:%s [%i]\n", cur_pos->line_number);
+        fprintf(stderr, "Error:%s [%i]\n", message, cur_pos->line_number);
     }
 
     exit(0);
@@ -233,6 +235,8 @@ char* Lexer::get_statement_name(){
     }
     
     char* new_name = new char[cur_pos->size];
+
+    return new_name;
 }
 
 /**
@@ -848,7 +852,7 @@ Ioperator* Lexer::get_number_sign(){
     if (cur_pos == tokens.end()){ return nullptr; }
 
     Ioperator* ret_val = nullptr;
-    Inode* right = nullptr;
+    Ioperand* right = nullptr;
     int tmp = 0;
 
     if (strcmp(cur_pos->lexem, "(") == 0){
@@ -881,11 +885,9 @@ Ioperator* Lexer::get_number_sign(){
     return new Number_sign(right, true);
 }
 
-Inode* Lexer::get_operand_or_custom_op(){
+Ioperand* Lexer::get_operand_or_custom_op(){
 
     if (cur_pos == tokens.end()){ return nullptr; }
-
-    Inode* ret_val = nullptr;
 
     if ((strtod(cur_pos->lexem, nullptr) != 0) || (strcmp(cur_pos->lexem, "0") == 0)){ 
 
@@ -893,5 +895,38 @@ Inode* Lexer::get_operand_or_custom_op(){
     }
 
     return get_var();
+}
+
+void Lexer::dump_graphviz(){
+
+    FILE* out_file = fopen(GRAPH_PATH, "a");
+
+    fprintf(out_file, "digraph Dump{\n");
+    fprintf(out_file, "node[color=red,fontsize=14, style=filled]\n");
+
+    root->print_graphviz();
+
+    fprintf(out_file, "}\n");
+
+    fclose(out_file);
+}
+
+void print_type(FILE* out_file, DataType type){
+
+    if (type == T_char){ fprintf(out_file, "char"); }
+    if (type == T_int){ fprintf(out_file, "int"); }
+    if (type == T_float){ fprintf(out_file, "float"); }
+    if (type == T_arr){ fprintf(out_file, "arr"); }
+    if (type == T_expr){ fprintf(out_file, "expr"); }
+}
+
+void delete_initial_list(Initialization_list init_list){
+
+    for (int i = 0; i < init_list.num_of_vars; i++){
+
+        delete[] init_list.list_of_vars[i].name;
+    }
+
+    delete init_list.list_of_vars;
 }
 

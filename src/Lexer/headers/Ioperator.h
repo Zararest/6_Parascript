@@ -29,7 +29,14 @@ protected:
 
 public: 
 
-    Ioperator(Ioperator* new_left, Ioperator* new_right);
+    Ioperator() = default;
+
+    Ioperator(Ioperator* new_left, Ioperator* new_right){
+        
+        left = new_left;
+        right = new_right;
+    }
+    
     virtual void print_graphviz() const = 0;
 
     virtual ~Ioperator(){
@@ -55,7 +62,7 @@ class Logical_or final: public Ioperator{
 
 public:
 
-    Logical_or(Ioperator* new_left, Ioperator* new_right);
+    Logical_or(Ioperator* new_left, Ioperator* new_right): Ioperator(new_left, new_right){}
     
     ~Logical_or(){}
 
@@ -73,7 +80,7 @@ class Logical_and final: public Ioperator{
 
 public:
 
-    Logical_and(Ioperator* new_left, Ioperator* new_right);
+    Logical_and(Ioperator* new_left, Ioperator* new_right): Ioperator(new_left, new_right){}
 
     ~Logical_and(){}
 
@@ -93,7 +100,10 @@ class Equality final: public Ioperator{
 
 public:
 
-    Equality(Ioperator* new_left, bool is_equal, Ioperator* new_right);
+    Equality(Ioperator* new_left, bool is_equal, Ioperator* new_right): Ioperator(new_left, new_right){
+
+        equal = is_equal;
+    }
 
     ~Equality(){}
 
@@ -121,7 +131,10 @@ class Greater final: public Ioperator{
 
 public:
 
-    Greater(Ioperator* new_left, bool is_equal, Ioperator* new_right);  
+    Greater(Ioperator* new_left, bool is_equal, Ioperator* new_right): Ioperator(new_left, new_right){
+
+        and_equal = is_equal;
+    }  
 
     ~Greater(){}
 
@@ -149,7 +162,10 @@ class Less final: public Ioperator{
 
 public:
 
-    Less(Ioperator* new_left, bool is_equal, Ioperator* new_right);  
+    Less(Ioperator* new_left, bool is_equal, Ioperator* new_right): Ioperator(new_left, new_right){
+
+        and_equal = is_equal;
+    }
 
     ~Less(){}
 
@@ -175,7 +191,7 @@ class Bin_plus final: public Ioperator{
 
 public:
 
-    Bin_plus(Ioperator* new_left, Ioperator* new_right);
+    Bin_plus(Ioperator* new_left, Ioperator* new_right): Ioperator(new_left, new_right){}
 
     ~Bin_plus(){}
 
@@ -193,7 +209,7 @@ class Bin_minus final: public Ioperator{
 
 public:
 
-    Bin_minus(Ioperator* new_left, Ioperator* new_right);
+    Bin_minus(Ioperator* new_left, Ioperator* new_right): Ioperator(new_left, new_right){}
 
     ~Bin_minus(){}
 
@@ -211,7 +227,7 @@ class Mul final: public Ioperator{
 
 public:
 
-    Mul(Ioperator* new_left, Ioperator* new_right);
+    Mul(Ioperator* new_left, Ioperator* new_right): Ioperator(new_left, new_right){}
 
     ~Mul(){}
 
@@ -229,7 +245,7 @@ class Div final: public Ioperator{
 
 public:
 
-    Div(Ioperator* new_left, Ioperator* new_right);
+    Div(Ioperator* new_left, Ioperator* new_right): Ioperator(new_left, new_right){}
 
     ~Div(){}
 
@@ -246,10 +262,21 @@ public:
 class Number_sign final: public Ioperator{
 
     bool less_than_zero = false;
+    Ioperand* operand = nullptr;
 
 public:
 
-    Number_sign(Inode* new_right, bool is_less_than_zero);
+    explicit Number_sign(Ioperand* new_operand, bool is_less_than_zero){
+
+        operand = new_operand;
+        less_than_zero = is_less_than_zero;
+    }
+
+    explicit Number_sign(Ioperator* new_right, bool is_less_than_zero){
+
+        right = new_right;
+        less_than_zero = is_less_than_zero;
+    }
 
     ~Number_sign(){}
 

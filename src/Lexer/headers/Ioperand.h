@@ -16,7 +16,11 @@ class Var final: public Ioperand{
 
 public:
 
-    Var(char* new_name, bool is_inner); //тут без копирования имени
+    Var(char* new_name, bool is_inner){//тут без копирования имени
+
+        name = new_name;
+        inner = is_inner;
+    } 
 
     ~Var(){
 
@@ -39,7 +43,10 @@ class Num final: public Ioperand{
 
 public:
 
-    Num(double new_value);
+    Num(double new_value){
+
+        value = new_value;
+    }
 
     ~Num(){}
 

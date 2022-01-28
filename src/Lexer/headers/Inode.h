@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstring>
+#include <cstdio>
 #define GRAPH_PATH "../bin/graph.dot"
 
 typedef int DataType;
@@ -24,6 +26,9 @@ struct Initialization_list{
     int num_of_vars = 0;
     Initialization_prot* list_of_vars = nullptr;
 };
+
+void print_type(FILE* out_file, DataType type);
+void delete_initial_list(Initialization_list init_list);
 
 class Inode{
     
