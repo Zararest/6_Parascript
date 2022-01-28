@@ -1,16 +1,3 @@
-The first thing to do is to assign the iterator some properties. Until C++17 this is done by tagging it with the tag dispatch mechanism, 
-while C++20 uses concepts: in this article I will follow the traditional approach.
-
-overload_set{example}
-
-    sum(int b, char v, name){
-
-        asm{
-
-        }
-    }
-
-
-{name} <[int a, char b] sum(32, a, name); 
-        a = a + b;
-        tmp->[a, 2]  >
+{name} <[int a, char b]
+        a = 1 + b;
+        tmp->[a, b]  >

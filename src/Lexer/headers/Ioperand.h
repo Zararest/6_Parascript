@@ -5,7 +5,7 @@ class Ioperand: public Inode{
 
 public: 
 
-    virtual void print_graphviz() const = 0;
+    virtual void print_graphviz(FILE* out_file) const = 0;
     virtual ~Ioperand(){};
 };
 
@@ -27,13 +27,9 @@ public:
         delete name;
     }
 
-    void print_graphviz() const override{
-
-        FILE* out_file = fopen(GRAPH_PATH, "a");
+    void print_graphviz(FILE* out_file) const override{
 
         fprintf(out_file, "\"%p\" [label = \"%s\" fillcolor=yellow]\n", this, name);
-
-        fclose(out_file);
     }
 };
 
@@ -50,13 +46,9 @@ public:
 
     ~Num(){}
 
-    void print_graphviz() const override{
-
-        FILE* out_file = fopen(GRAPH_PATH, "a");
+    void print_graphviz(FILE* out_file) const override{
 
         fprintf(out_file, "\"%p\" [label = \"%lf\" fillcolor=yellow]\n", this, value);
-
-        fclose(out_file);
     }
 };
 
@@ -72,12 +64,8 @@ public:
         delete[] string;
     }
 
-    void print_graphviz() const override{
-
-        FILE* out_file = fopen(GRAPH_PATH, "a");
+    void print_graphviz(FILE* out_file) const override{
 
         fprintf(out_file, "\"%p\" [label = \"%s\" fillcolor=yellow]\n", this, string);
-
-        fclose(out_file);
     }
 };

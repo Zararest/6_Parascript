@@ -9,18 +9,14 @@ protected:
 
     Icontent_of_statement* next_expr = nullptr;
 
-    void print_next() const{
-
-        FILE* out_file = fopen(GRAPH_PATH, "a");
+    void print_next(FILE* out_file) const{
 
         if (next_expr != nullptr){
 
             fprintf(out_file, "\"%p\" -> \"%p\"\n", this, next_expr);
             fprintf(out_file, "\"%p\" -> \"%p\"\n", this, next_expr);
-            next_expr->print_graphviz();
+            next_expr->print_graphviz(out_file);
         }
-
-        fclose(out_file);
     }
 
 public: 
@@ -41,7 +37,7 @@ public:
         delete next_expr;
     };
 
-    virtual void print_graphviz() const = 0;
+    virtual void print_graphviz(FILE* out_file) const = 0;
 };
 
 class Call final: public Icontent_of_statement{
@@ -89,21 +85,17 @@ public:
         arr_of_vars = new_arr_of_vars;
     } 
 
-    void print_graphviz() const override{
-
-        FILE* out_file = fopen(GRAPH_PATH, "a");
+    void print_graphviz(FILE* out_file) const override{
 
         fprintf(out_file, "\"%p\" [label = \"Call:%s\" fillcolor=lightblue]\n", this, statement_name);
 
         for (int i = 0; i < num_of_vars; i++){
             
             fprintf(out_file, "\"%p\" -> \"%p\"\n", this, arr_of_vars[i]);
-            arr_of_vars[i]->print_graphviz();
+            arr_of_vars[i]->print_graphviz(out_file);
         }
 
-        fclose(out_file);
-
-        print_next();
+        print_next(out_file);
     }
 };
 
@@ -151,24 +143,20 @@ public:
         arr_of_calls = new_arr_of_calls;
     }
 
-    void print_graphviz() const override{
-
-        FILE* out_file = fopen(GRAPH_PATH, "a");
+    void print_graphviz(FILE* out_file) const override{
 
         fprintf(out_file, "\"%p\" [label = \"If\" fillcolor=lightblue]\n", this);
 
         for (int i = 0; i < num_of_calls; i++){
             
             fprintf(out_file, "\"%p\" -> \"%p\"\n", this, arr_of_calls[i]);
-            arr_of_calls[i]->print_graphviz();
+            arr_of_calls[i]->print_graphviz(out_file);
         }
 
         fprintf(out_file, "\"%p\" -> \"%p\"\n", this, condition);
-        condition->print_graphviz();
+        condition->print_graphviz(out_file);
 
-        fclose(out_file);
-
-        print_next();
+        print_next(out_file);
     }
 };
 
@@ -199,21 +187,17 @@ public:
         loop_body = new_loop_body;
     }
 
-    void print_graphviz() const override{
-
-        FILE* out_file = fopen(GRAPH_PATH, "a");
+    void print_graphviz(FILE* out_file) const override{
 
         fprintf(out_file, "\"%p\" [label = \"While\" fillcolor=lightblue]\n", this);
 
         fprintf(out_file, "\"%p\" -> \"%p\"\n", this, loop_body);
-        loop_body->print_graphviz();
+        loop_body->print_graphviz(out_file);
 
         fprintf(out_file, "\"%p\" -> \"%p\"\n", this, condition);
-        condition->print_graphviz();
+        condition->print_graphviz(out_file);
 
-        fclose(out_file);
-
-        print_next();
+        print_next(out_file);
     }
 };
 
@@ -256,20 +240,16 @@ public:
         r_value = new_r_value;
     }
     
-    void print_graphviz() const override{
-
-        FILE* out_file = fopen(GRAPH_PATH, "a");
+    void print_graphviz(FILE* out_file) const override{
 
         fprintf(out_file, "\"%p\" [label = \"=\" fillcolor=lightblue]\n", this);
 
         fprintf(out_file, "\"%p\" -> \"%p\"\n", this, l_value);
-        l_value->print_graphviz();
+        l_value->print_graphviz(out_file);
 
         fprintf(out_file, "\"%p\" -> \"%p\"\n", this, r_value);
-        r_value->print_graphviz();
+        r_value->print_graphviz(out_file);
 
-        fclose(out_file);
-
-        print_next();
+        print_next(out_file);
     }
 };

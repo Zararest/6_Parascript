@@ -10,7 +10,6 @@ public:
     virtual ~Interf(){};
 };
 
-
 class Isec: public Interf{
 
 public:
@@ -39,4 +38,9 @@ int main(int, char**){
     Lexer new_tree(tokens);
     new_tree.get_syntax_tree();
     new_tree.dump_graphviz();
+
+    for (iter = tokens.begin(); iter != tokens.end(); iter++){
+
+        //printf("|%s|->", iter->lexem);
+    }
 }   

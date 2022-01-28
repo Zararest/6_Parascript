@@ -34,7 +34,6 @@ class Inode{
     
 public:
     
-    virtual void print_graphviz() const = 0;
-    //virtual Inode* copy_tree() const;
+    virtual void print_graphviz(FILE* out_file) const = 0;
     virtual ~Inode(){};
 };

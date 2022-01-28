@@ -33,6 +33,8 @@ bool Lexer::require(const char* req_token, const char* message){
         }
     }
 
+    check_end_of_tokens();
+
     if (strcmp(cur_pos->lexem, req_token) == 0){
 
         cur_pos++;
@@ -40,7 +42,7 @@ bool Lexer::require(const char* req_token, const char* message){
     } else{
 
         fprintf(stderr, "Error:%s: in line %i |%s| was expected ", message, cur_pos->line_number, req_token);
-        fprintf(stderr, "but %s was received\n", cur_pos->lexem);
+        fprintf(stderr, "but |%s| was received\n", cur_pos->lexem);
         exit(0);
         return false;
     }
@@ -64,7 +66,7 @@ void Lexer::error(const char* message){
         fprintf(stderr, "Error:%s [end of file]\n", message);
     } else{
 
-        fprintf(stderr, "Error:%s [%i]\n", message, cur_pos->line_number);
+        fprintf(stderr, "Error:%s line:[%i]\n", message, cur_pos->line_number);
     }
 
     exit(0);
@@ -92,7 +94,7 @@ Icontrol_struct* Lexer::get_block_of_code(){
             }
         }
 
-        if (((tmp_node = get_statement()) != nullptr) && !flag){
+        if (!flag && ((tmp_node = get_statement()) != nullptr)){
 
             flag = true;
             
@@ -105,7 +107,7 @@ Icontrol_struct* Lexer::get_block_of_code(){
             }
         }
 
-        if (((tmp_node = get_use()) != nullptr) && !flag){
+        if (!flag && ((tmp_node = get_use()) != nullptr)){
 
             flag = true;
             
@@ -190,7 +192,6 @@ Statement* Lexer::get_statement(){
     ret_node->add_first_expr(get_stat_content());
 
     require(">", "statement");
-    check_end_of_tokens();
 
     return ret_node;
 }
@@ -227,14 +228,16 @@ char* Lexer::get_statement_name(){
     for (int i = 0; i < cur_pos->size - 1; i++){
 
         if (!is_letter(lexem[i])
-            && (!is_number(lexem[i])
-                || lexem[i] != '_')){ 
+            && !is_number(lexem[i])
+                && lexem[i] != '_'){ 
             
             return nullptr; 
         }
     }
     
     char* new_name = new char[cur_pos->size];
+    memcpy(new_name, lexem, cur_pos->size);
+    cur_pos++;
 
     return new_name;
 }
@@ -276,7 +279,7 @@ char* Lexer::get_var_name(){
 }
 
 /**
- * @brief В get_statement_name() выделяется память под переменную.
+ * @brief В get_statement_name() выделяется память под переменную. И сдвигается позиция
  * 
  * @param init_list 
  * @param new_var_type 
@@ -324,6 +327,7 @@ Initialization_list Lexer::get_init_list(){
         new_var_name = get_var_name();
 
         add_new_var(ret_val, new_var_type, new_var_name);
+        cur_pos++;
 
         check_end_of_tokens();
 
@@ -349,7 +353,7 @@ Icontent_of_statement* Lexer::get_stat_content(){
     do{
         found_expr = false;
 
-        if (((tmp_node = get_if()) != nullptr) && !found_expr){
+        if (!found_expr && ((tmp_node = get_if()) != nullptr)){
 
             found_expr = true;
 
@@ -362,7 +366,7 @@ Icontent_of_statement* Lexer::get_stat_content(){
             }
         }
 
-        if (((tmp_node = get_cycle()) != nullptr) && !found_expr){
+        if (!found_expr && ((tmp_node = get_cycle()) != nullptr)){
 
             found_expr = true;
 
@@ -375,7 +379,7 @@ Icontent_of_statement* Lexer::get_stat_content(){
             }
         }
 
-        if (((tmp_node = get_assign()) != nullptr) && !found_expr){
+        if (!found_expr && ((tmp_node = get_assign()) != nullptr)){
 
             found_expr = true;
 
@@ -388,7 +392,7 @@ Icontent_of_statement* Lexer::get_stat_content(){
             }
         }
 
-        if (((tmp_node = get_call()) != nullptr) && !found_expr){
+        if (!found_expr && ((tmp_node = get_call()) != nullptr)){
 
             found_expr = true;
 
@@ -400,19 +404,6 @@ Icontent_of_statement* Lexer::get_stat_content(){
                 ret_node->add_content_of_statement(tmp_node);
             }
         }
-
-        /*if (((tmp_node = get_cust_op()) != nullptr) && !found_expr){
-
-            found_expr = true;
-
-            if (ret_node == nullptr){
-
-                ret_node = tmp_node;
-            } else{
-
-                ret_node->add_content_of_statement(tmp_node);
-            }
-        }*/ //потом надо добавить
 
     } while(found_expr);
 
@@ -481,7 +472,7 @@ Assign* Lexer::get_assign(){
 
     if (cur_pos == tokens.end()){ return nullptr; }
     cur_pos++;
-    if ((cur_pos != tokens.end()) && (strcmp(cur_pos->lexem, "=") != 0)){ return nullptr; }
+    if ((cur_pos == tokens.end()) || (strcmp(cur_pos->lexem, "=") != 0)){ cur_pos--; return nullptr; }
     cur_pos--;
 
     Assign* ret_val = new Assign;
@@ -499,6 +490,8 @@ Assign* Lexer::get_assign(){
 
         error("assign: R_value was expected");
     }
+
+    require(";", "assign");
 
     ret_val->add_l_value(new_var);
     ret_val->add_r_value(new_expr);
@@ -546,7 +539,10 @@ Call* Lexer::get_call(){
 
     if (cur_pos == tokens.end()){ return nullptr; }
     cur_pos++;
-    if ((cur_pos != tokens.end()) && (strcmp(cur_pos->lexem, "-") != 0)){ return nullptr; }
+    if ((cur_pos == tokens.end()) || (strcmp(cur_pos->lexem, "-") != 0)){ cur_pos--; return nullptr; }
+    cur_pos++;
+    if ((cur_pos == tokens.end()) || (strcmp(cur_pos->lexem, ">") != 0)){ cur_pos--; return nullptr; }
+    cur_pos--;
     cur_pos--;
 
     Call* ret_val = new Call;
@@ -853,6 +849,7 @@ Ioperator* Lexer::get_number_sign(){
 
     Ioperator* ret_val = nullptr;
     Ioperand* right = nullptr;
+    Ioperand* tmp_node = nullptr;
     int tmp = 0;
 
     if (strcmp(cur_pos->lexem, "(") == 0){
@@ -879,10 +876,20 @@ Ioperator* Lexer::get_number_sign(){
         if (tmp != 0){ 
 
             return new Number_sign(right, false);
+        } else{
+
+            return new Number_sign(right, true);
         }
     }
 
-    return new Number_sign(right, true);
+    tmp_node = get_operand_or_custom_op();
+    
+    if (tmp_node == nullptr){
+
+        error("opearnd was expected");
+    }
+
+    return new Number_sign(tmp_node, false);
 }
 
 Ioperand* Lexer::get_operand_or_custom_op(){
@@ -891,6 +898,7 @@ Ioperand* Lexer::get_operand_or_custom_op(){
 
     if ((strtod(cur_pos->lexem, nullptr) != 0) || (strcmp(cur_pos->lexem, "0") == 0)){ 
 
+        cur_pos++;
         return new Num(strtod(cur_pos->lexem, nullptr));
     }
 
@@ -899,12 +907,12 @@ Ioperand* Lexer::get_operand_or_custom_op(){
 
 void Lexer::dump_graphviz(){
 
-    FILE* out_file = fopen(GRAPH_PATH, "a");
+    FILE* out_file = fopen(GRAPH_PATH, "w");
 
     fprintf(out_file, "digraph Dump{\n");
     fprintf(out_file, "node[color=red,fontsize=14, style=filled]\n");
 
-    root->print_graphviz();
+    root->print_graphviz(out_file);
 
     fprintf(out_file, "}\n");
 

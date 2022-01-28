@@ -7,18 +7,14 @@ protected:
 
     Icontrol_struct* next_struct = nullptr;
 
-    void print_next() const{
-
-        FILE* out_file = fopen(GRAPH_PATH, "a");
+    void print_next(FILE* out_file) const{
 
         if (next_struct != nullptr){
 
             fprintf(out_file, "\"%p\" -> \"%p\"\n", this, next_struct);
             fprintf(out_file, "\"%p\" -> \"%p\"\n", this, next_struct);
-            next_struct->print_graphviz();
+            next_struct->print_graphviz(out_file);
         }
-
-        fclose(out_file);
     }
 
 public:
@@ -34,7 +30,7 @@ public:
         }
     } 
 
-    virtual void print_graphviz() const = 0;
+    virtual void print_graphviz(FILE* out_file) const = 0;
 
     virtual ~Icontrol_struct(){
 
@@ -51,7 +47,7 @@ class Overload_op final: public Icontrol_struct{
 
 public:
 
-    void print_graphviz() const override{};
+    void print_graphviz(FILE* out_file) const override{};
     Overload_op* copy_tree() const;
 };
 
@@ -64,7 +60,7 @@ public:
 
     void add_operator(Overload_op* new_op){ } //должен прокидывать эту ссылку через цепочку операторов(first_overload)
     bool add_name(char* name){ return false; }
-    void print_graphviz() const override{}
+    void print_graphviz(FILE* out_file) const override{}
 };
 
 class Use final: public Icontrol_struct{
@@ -127,9 +123,7 @@ public:
         return true;
     }
 
-    void print_graphviz() const override{
-
-        FILE* out_file = fopen(GRAPH_PATH, "a");
+    void print_graphviz(FILE* out_file) const override{
 
         fprintf(out_file, "\"%p\" [label = \"Statement:%s[", this, statement_name);
 
@@ -151,12 +145,10 @@ public:
         if (first_expr != nullptr){
 
             fprintf(out_file, "\"%p\" -> \"%p\"\n", this, first_expr);
-            first_expr->print_graphviz();
+            first_expr->print_graphviz(out_file);
         }
 
-        fclose(out_file);
-
-        print_next();
+        print_next(out_file);
     }
 };
 

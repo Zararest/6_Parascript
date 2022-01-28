@@ -8,23 +8,19 @@ protected:
     Inode* left = nullptr;
     Inode* right = nullptr;
 
-    void print_nodes() const{
-
-        FILE* out_file = fopen(GRAPH_PATH, "a");
+    void print_nodes(FILE* out_file) const{
 
         if (left != nullptr){
 
             fprintf(out_file, "\"%p\" -> \"%p\"\n", this, left);
-            left->print_graphviz();
+            left->print_graphviz(out_file);
         }
 
         if (right != nullptr){
 
             fprintf(out_file, "\"%p\" -> \"%p\"\n", this, right);
-            right->print_graphviz();
+            right->print_graphviz(out_file);
         }
-
-        fclose(out_file);
     }
 
 public: 
@@ -37,7 +33,7 @@ public:
         right = new_right;
     }
     
-    virtual void print_graphviz() const = 0;
+    virtual void print_graphviz(FILE* out_file) const = 0;
 
     virtual ~Ioperator(){
 
@@ -66,13 +62,11 @@ public:
     
     ~Logical_or(){}
 
-    void print_graphviz() const override{
+    void print_graphviz(FILE* out_file) const override{
 
-        FILE* out_file = fopen(GRAPH_PATH, "a");
         fprintf(out_file, "\"%p\" [label = \"||\" fillcolor=green]\n", this);
-        fclose(out_file);
 
-        print_nodes();
+        print_nodes(out_file);
     }
 };
 
@@ -84,13 +78,11 @@ public:
 
     ~Logical_and(){}
 
-    void print_graphviz() const override{
+    void print_graphviz(FILE* out_file) const override{
 
-        FILE* out_file = fopen(GRAPH_PATH, "a");
         fprintf(out_file, "\"%p\" [label = \"&&\" fillcolor=green]\n", this);
-        fclose(out_file);
 
-        print_nodes();
+        print_nodes(out_file);
     }
 };
 
@@ -107,9 +99,7 @@ public:
 
     ~Equality(){}
 
-    void print_graphviz() const override{
-
-        FILE* out_file = fopen(GRAPH_PATH, "a");
+    void print_graphviz(FILE* out_file) const override{
 
         if (equal){
 
@@ -119,9 +109,7 @@ public:
             fprintf(out_file, "\"%p\" [label = \"!=\" fillcolor=green]\n", this);
         }
 
-        fclose(out_file);
-
-        print_nodes();
+        print_nodes(out_file);
     }
 };
 
@@ -138,9 +126,7 @@ public:
 
     ~Greater(){}
 
-    void print_graphviz() const override{
-
-        FILE* out_file = fopen(GRAPH_PATH, "a");
+    void print_graphviz(FILE* out_file) const override{
 
         if (and_equal){
 
@@ -150,9 +136,7 @@ public:
             fprintf(out_file, "\"%p\" [label = \">\" fillcolor=green]\n", this);
         }
 
-        fclose(out_file);
-
-        print_nodes();
+        print_nodes(out_file);
     }
 };
 
@@ -169,9 +153,7 @@ public:
 
     ~Less(){}
 
-    void print_graphviz() const override{
-
-        FILE* out_file = fopen(GRAPH_PATH, "a");
+    void print_graphviz(FILE* out_file) const override{
 
         if (and_equal){
 
@@ -181,9 +163,7 @@ public:
             fprintf(out_file, "\"%p\" [label = \"<\" fillcolor=green]\n", this);
         }
 
-        fclose(out_file);
-
-        print_nodes();
+        print_nodes(out_file);
     }
 };
 
@@ -195,13 +175,11 @@ public:
 
     ~Bin_plus(){}
 
-    void print_graphviz() const override{
+    void print_graphviz(FILE* out_file) const override{
 
-        FILE* out_file = fopen(GRAPH_PATH, "a");
         fprintf(out_file, "\"%p\" [label = \"...+...\" fillcolor=green]\n", this);
-        fclose(out_file);
 
-        print_nodes();
+        print_nodes(out_file);
     }
 };
 
@@ -213,13 +191,11 @@ public:
 
     ~Bin_minus(){}
 
-    void print_graphviz() const override{
+    void print_graphviz(FILE* out_file) const override{
 
-        FILE* out_file = fopen(GRAPH_PATH, "a");
         fprintf(out_file, "\"%p\" [label = \"...-...\" fillcolor=green]\n", this);
-        fclose(out_file);
 
-        print_nodes();
+        print_nodes(out_file);
     }
 };
 
@@ -231,13 +207,11 @@ public:
 
     ~Mul(){}
 
-    void print_graphviz() const override{
+    void print_graphviz(FILE* out_file) const override{
 
-        FILE* out_file = fopen(GRAPH_PATH, "a");
         fprintf(out_file, "\"%p\" [label = \"...*...\" fillcolor=green]\n", this);
-        fclose(out_file);
 
-        print_nodes();
+        print_nodes(out_file);
     }
 };
 
@@ -249,13 +223,11 @@ public:
 
     ~Div(){}
 
-    void print_graphviz() const override{
+    void print_graphviz(FILE* out_file) const override{
 
-        FILE* out_file = fopen(GRAPH_PATH, "a");
         fprintf(out_file, "\"%p\" [label = \".../...\" fillcolor=green]\n", this);
-        fclose(out_file);
 
-        print_nodes();
+        print_nodes(out_file);
     }
 };
 
@@ -280,9 +252,7 @@ public:
 
     ~Number_sign(){}
 
-    void print_graphviz() const override{
-
-        FILE* out_file = fopen(GRAPH_PATH, "a");
+    void print_graphviz(FILE* out_file) const override{
 
         if (less_than_zero){
 
@@ -291,10 +261,8 @@ public:
 
             fprintf(out_file, "\"%p\" [label = \"+...\" fillcolor=green]\n", this);
         }
-        
-        fclose(out_file);
 
-        print_nodes();
+        print_nodes(out_file);
     }
 };
 
