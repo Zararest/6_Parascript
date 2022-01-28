@@ -1,12 +1,11 @@
 #pragma once
-#include "Lexer.h"
+#include "Inode.h"
 
 class Ioperand: public Inode{
 
 public: 
 
-    virtual void print_graphviz(FILE* outp_file);
-    virtual Inode* copy_tree() const;
+    virtual void print_graphviz() const = 0;
     virtual ~Ioperand(){};
 };
 
@@ -18,7 +17,20 @@ class Var final: public Ioperand{
 public:
 
     Var(char* new_name, bool is_inner); //тут без копирования имени
-    Var* copy_tree() const;
+
+    ~Var(){
+
+        delete name;
+    }
+
+    void print_graphviz() const override{
+
+        FILE* out_file = fopen(GRAPH_PATH, "a");
+
+        fprintf(out_file, "\"%p\" [label = \"%s\" fillcolor=yellow]\n", this, name);
+
+        fclose(out_file);
+    }
 };
 
 class Num final: public Ioperand{
@@ -28,7 +40,17 @@ class Num final: public Ioperand{
 public:
 
     Num(double new_value);
-    Num* copy_tree() const;
+
+    ~Num(){}
+
+    void print_graphviz() const override{
+
+        FILE* out_file = fopen(GRAPH_PATH, "a");
+
+        fprintf(out_file, "\"%p\" [label = \"%lf\" fillcolor=yellow]\n", this, value);
+
+        fclose(out_file);
+    }
 };
 
 class String final: public Ioperand{
@@ -38,5 +60,17 @@ class String final: public Ioperand{
 
 public:
 
-    String* copy_tree() const;
+    ~String(){
+
+        delete[] string;
+    }
+
+    void print_graphviz() const override{
+
+        FILE* out_file = fopen(GRAPH_PATH, "a");
+
+        fprintf(out_file, "\"%p\" [label = \"%s\" fillcolor=yellow]\n", this, string);
+
+        fclose(out_file);
+    }
 };

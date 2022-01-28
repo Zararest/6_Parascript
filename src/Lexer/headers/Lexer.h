@@ -1,44 +1,10 @@
 #pragma once
+#include "Inode.h"
 #include "Icontent_of_statement.h"
 #include "Icontrol_struct.h"
 #include "Ioperand.h"
 #include "Ioperator.h"
 #include "../../Parcer/headers/Parcer.h"
-
-typedef int DataType;
-
-enum Data_types{
-    
-    T_char = 0,
-    T_int = 1,
-    T_float = 2,
-    T_arr = 3,
-    T_expr = 4
-};
-
-struct Initialization_list{
-
-    int num_of_vars = 0;
-    Initialization_prot* list_of_vars = nullptr;
-};
-
-struct Initialization_prot{
-
-    char* name = nullptr;
-    DataType type;
-};
-
-class Inode{
-
-    Inode* prev = nullptr;
-    
-public:
-    
-    virtual void link(Inode* new_node);//должно проводится связывание с этим узлом через prev
-    virtual void print_graphviz(FILE* outp_file);
-    virtual Inode* copy_tree() const;
-    virtual ~Inode(){};
-};
 
 class Lexer{
 

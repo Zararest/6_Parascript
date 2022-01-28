@@ -1,10 +1,39 @@
 #include <iostream>
-#include "src/Parcer/headers/Parcer.h"
+#include "src/Lexer/headers/Lexer.h"
+//#include "src/Parcer/headers/Parcer.h"
+
+class Interf{
+
+public:
+
+    virtual void req() = 0;
+};
+
+
+class Isec: public Interf{
+
+public:
+
+    virtual void req() override{ printf("second\n"); }
+};
+
+class Der: public Isec{
+
+public:
+
+    //void req(){ printf("derived\n"); }
+};
 
 int main(int, char**) {
     
-    std::list<lexem> tokens;
-    std::list<lexem>::iterator iter = tokens.begin();
+    Der tmp;
+    tmp.req();
+
+    Interf* base = &tmp;
+
+    //std::list<lexem> tokens;
+    //Lexer tmp(tokens);
+    /*std::list<lexem>::iterator iter = tokens.begin();
     Parcer parcer;
     FILE* input = fopen("../bin/input.txt", "r");
 
@@ -13,5 +42,5 @@ int main(int, char**) {
     for (iter = tokens.begin(); iter != tokens.end(); iter++){
 
         printf("|%s|->", iter->lexem);
-    }
+    }*/
 }
