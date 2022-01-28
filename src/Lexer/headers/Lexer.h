@@ -21,6 +21,8 @@ class Lexer{
         Initialization_list get_init_list();//+
         Var* get_var();//+
     Icontent_of_statement* get_stat_content();//+
+        Statements_return* get_ret_var();
+        Return_statement* get_return_stat();
         If* get_if();//+
         Assign* get_assign();//+
         Custom_operator* get_cust_op(){ return nullptr; };//потом

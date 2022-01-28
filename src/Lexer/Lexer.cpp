@@ -405,10 +405,94 @@ Icontent_of_statement* Lexer::get_stat_content(){
             }
         }
 
+        if (!found_expr && ((tmp_node = get_return_stat()) != nullptr)){
+
+            found_expr = true;
+
+            if (ret_node == nullptr){
+
+                ret_node = tmp_node;
+            } else{
+
+                ret_node->add_content_of_statement(tmp_node);
+            }
+        }
+
+        if (!found_expr && ((tmp_node = get_ret_var()) != nullptr)){
+
+            found_expr = true;
+
+            if (ret_node == nullptr){
+
+                ret_node = tmp_node;
+            } else{
+
+                ret_node->add_content_of_statement(tmp_node);
+            }
+        }
+
     } while(found_expr);
 
     return ret_node;
 }
+
+Statements_return* Lexer::get_ret_var(){
+
+    if (cur_pos == tokens.end()){ return nullptr; }
+    if (strcmp(cur_pos->lexem, "(") != 0){ return nullptr; }
+
+    Statements_return* ret_val = new Statements_return;
+    Var* tmp_node = nullptr;
+    
+    cur_pos++;
+    check_end_of_tokens();
+
+    tmp_node = get_var();
+
+    require(")", "ret_var");
+    cur_pos++;
+
+    ret_val->add_var(tmp_node);
+
+    return ret_val;
+}
+
+Return_statement* Lexer::get_return_stat(){
+
+    if (cur_pos == tokens.end()){ return nullptr; }
+    if (strcmp(cur_pos->lexem, "{") != 0){ return nullptr; }
+
+    Return_statement* ret_val = new Return_statement;
+    Call* tmp_node = nullptr;
+    Var* tmp_var = nullptr;
+
+    cur_pos++;
+    check_end_of_tokens();
+
+    tmp_node = get_call();
+
+    if (tmp_node == nullptr){ 
+
+        error("return statement");
+    }
+
+    require("}", "return statement");
+    require("-", "return statement");
+    require(">", "return statement");
+    check_end_of_tokens();
+
+    tmp_var = get_var();
+
+    if (tmp_var == nullptr){
+
+        error("return statement");
+    }
+
+    ret_val->add_var(tmp_var);
+    ret_val->add_call(tmp_node);
+
+    return ret_val;
+}   
 
 /**
  * @brief Отсутствие выражения всегда 0. 
@@ -429,7 +513,7 @@ If* Lexer::get_if(){
     require("(", "if_statement");
     check_end_of_tokens();
 
-    ret_val->add_condition(get_expr());
+    ret_val->add_condition(get_expr());         //добавить проверку на nullptr
 
     require(")", "if_statement");
     check_end_of_tokens();
@@ -587,7 +671,7 @@ Var* Lexer::get_var(){
     char* var_name = nullptr;
     bool is_inner = false;
 
-    if (cur_pos->lexem == "inner"){
+    if (strcmp(cur_pos->lexem, "inner") == 0){
 
         is_inner = true;
         cur_pos++;
@@ -898,8 +982,9 @@ Ioperand* Lexer::get_operand_or_custom_op(){
 
     if ((strtod(cur_pos->lexem, nullptr) != 0) || (strcmp(cur_pos->lexem, "0") == 0)){ 
 
+        Ioperand* ret_val = new Num(strtod(cur_pos->lexem, nullptr));
         cur_pos++;
-        return new Num(strtod(cur_pos->lexem, nullptr));
+        return ret_val;
     }
 
     return get_var();

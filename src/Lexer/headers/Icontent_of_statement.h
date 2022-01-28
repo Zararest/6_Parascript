@@ -99,6 +99,83 @@ public:
     }
 };
 
+class Return_statement final: public Icontent_of_statement{
+
+    Call* ret_stat = nullptr;
+    Var* dest_var = nullptr;
+
+public:
+
+    ~Return_statement(){
+
+        delete ret_stat;
+        delete dest_var;
+    }
+
+    void add_call(Call* new_call){
+
+        delete ret_stat;
+        ret_stat = new_call;
+    }
+
+    void add_var(Var* new_var){
+
+        delete dest_var;
+        dest_var = new_var;
+    }
+
+    void print_graphviz(FILE* out_file) const override{
+
+        fprintf(out_file, "\"%p\" [label = \"Return\" fillcolor=orange]\n", this);
+
+        if (ret_stat != nullptr){
+
+            fprintf(out_file, "\"%p\" -> \"%p\"\n", this, ret_stat);
+            ret_stat->print_graphviz(out_file);
+        }
+
+        if (dest_var != nullptr){
+
+            fprintf(out_file, "\"%p\" -> \"%p\"\n", this, dest_var);
+            dest_var->print_graphviz(out_file);
+        }
+
+        print_next(out_file);
+    }
+
+};
+
+class Statements_return final: public Icontent_of_statement{
+
+    Var* ret_var = nullptr;
+
+public:
+
+    ~Statements_return(){
+
+        delete ret_var;
+    }
+
+    void add_var(Var* new_var){
+
+        delete ret_var;
+        ret_var = new_var;
+    }
+
+    void print_graphviz(FILE* out_file) const override{
+
+        fprintf(out_file, "\"%p\" [label = \"Return_val\" fillcolor=pink]\n", this);
+
+        if (ret_var != nullptr){
+
+            fprintf(out_file, "\"%p\" -> \"%p\"\n", this, ret_var);
+            ret_var->print_graphviz(out_file);
+        }
+
+        print_next(out_file);
+    }
+};
+
 class If final: public Icontent_of_statement{
 
     Ioperator* condition = nullptr; //тут может быть и нестандартный оператор

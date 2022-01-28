@@ -262,6 +262,12 @@ public:
             fprintf(out_file, "\"%p\" [label = \"+...\" fillcolor=green]\n", this);
         }
 
+        if (operand != nullptr){
+            
+            fprintf(out_file, "\"%p\" -> \"%p\"\n", this, operand);
+            operand->print_graphviz(out_file);
+        }
+
         print_nodes(out_file);
     }
 };
