@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../Compiler/headers/Irequest.h"
+
 #include <cstring>
 #include <cstdio>
 #define GRAPH_PATH "../bin/graph.dot"
@@ -35,6 +37,8 @@ class Inode{
     
 public:
     
+    virtual void get_request(Irequest* cur_req){};
     virtual void print_graphviz(FILE* out_file) const = 0;
     virtual ~Inode(){};
 };
+
