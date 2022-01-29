@@ -1,5 +1,6 @@
 #pragma once
 #include "Inode.h"
+#include "Ioperand.h"
 
 class Ioperator: public Inode{
 
@@ -8,38 +9,18 @@ protected:
     Inode* left = nullptr;
     Inode* right = nullptr;
 
-    void print_nodes(FILE* out_file) const{
-
-        if (left != nullptr){
-
-            fprintf(out_file, "\"%p\" -> \"%p\"\n", this, left);
-            left->print_graphviz(out_file);
-        }
-
-        if (right != nullptr){
-
-            fprintf(out_file, "\"%p\" -> \"%p\"\n", this, right);
-            right->print_graphviz(out_file);
-        }
-    }
+    void print_nodes(FILE* out_file) const;
 
 public: 
 
     Ioperator() = default;
+    Ioperator(Ioperator* new_left, Ioperator* new_right);
+    Ioperator(const Ioperator&) = delete;
+    virtual ~Ioperator();
 
-    Ioperator(Ioperator* new_left, Ioperator* new_right){
-        
-        left = new_left;
-        right = new_right;
-    }
-    
+    Ioperator& operator =(const Ioperator&) = delete;
+
     virtual void print_graphviz(FILE* out_file) const = 0;
-
-    virtual ~Ioperator(){
-
-        delete left;
-        delete right;
-    };
 };
 
 /*
@@ -59,32 +40,30 @@ class Logical_or final: public Ioperator{
 public:
 
     Logical_or(Ioperator* new_left, Ioperator* new_right): Ioperator(new_left, new_right){}
-    
-    ~Logical_or(){}
+    Logical_or(const Logical_or&) = delete;
+    ~Logical_or() = default;
 
-    void print_graphviz(FILE* out_file) const override{
+    Logical_or& operator =(const Logical_or&) = delete;
 
-        fprintf(out_file, "\"%p\" [label = \"||\" fillcolor=green]\n", this);
-
-        print_nodes(out_file);
-    }
+    void print_graphviz(FILE* out_file) const override;
 };
+
+
 
 class Logical_and final: public Ioperator{
 
 public:
 
     Logical_and(Ioperator* new_left, Ioperator* new_right): Ioperator(new_left, new_right){}
+    Logical_and(const Logical_and&) = delete;
+    ~Logical_and() = default;
 
-    ~Logical_and(){}
+    Logical_and& operator =(const Logical_and&) = delete;
 
-    void print_graphviz(FILE* out_file) const override{
-
-        fprintf(out_file, "\"%p\" [label = \"&&\" fillcolor=green]\n", this);
-
-        print_nodes(out_file);
-    }
+    void print_graphviz(FILE* out_file) const override;
 };
+
+
 
 class Equality final: public Ioperator{
 
@@ -92,26 +71,16 @@ class Equality final: public Ioperator{
 
 public:
 
-    Equality(Ioperator* new_left, bool is_equal, Ioperator* new_right): Ioperator(new_left, new_right){
+    Equality(Ioperator* new_left, bool is_equal, Ioperator* new_right);
+    Equality(const Equality&) = delete;
+    ~Equality() = default;
 
-        equal = is_equal;
-    }
+    Equality& operator =(const Equality&) = delete;
 
-    ~Equality(){}
-
-    void print_graphviz(FILE* out_file) const override{
-
-        if (equal){
-
-            fprintf(out_file, "\"%p\" [label = \"==\" fillcolor=green]\n", this);
-        } else{
-
-            fprintf(out_file, "\"%p\" [label = \"!=\" fillcolor=green]\n", this);
-        }
-
-        print_nodes(out_file);
-    }
+    void print_graphviz(FILE* out_file) const override;
 };
+
+
 
 class Greater final: public Ioperator{
 
@@ -119,26 +88,16 @@ class Greater final: public Ioperator{
 
 public:
 
-    Greater(Ioperator* new_left, bool is_equal, Ioperator* new_right): Ioperator(new_left, new_right){
+    Greater(Ioperator* new_left, bool is_equal, Ioperator* new_right);
+    Greater(const Greater&) = delete;
+    ~Greater() = default;
 
-        and_equal = is_equal;
-    }  
+    Equality& operator =(const Equality&) = delete;
 
-    ~Greater(){}
-
-    void print_graphviz(FILE* out_file) const override{
-
-        if (and_equal){
-
-            fprintf(out_file, "\"%p\" [label = \">=\" fillcolor=green]\n", this);
-        } else{
-
-            fprintf(out_file, "\"%p\" [label = \">\" fillcolor=green]\n", this);
-        }
-
-        print_nodes(out_file);
-    }
+    void print_graphviz(FILE* out_file) const override;
 };
+
+
 
 class Less final: public Ioperator{
 
@@ -146,90 +105,76 @@ class Less final: public Ioperator{
 
 public:
 
-    Less(Ioperator* new_left, bool is_equal, Ioperator* new_right): Ioperator(new_left, new_right){
+    Less(Ioperator* new_left, bool is_equal, Ioperator* new_right);
+    Less(const Less&) = delete;
+    ~Less() = default;
 
-        and_equal = is_equal;
-    }
+    Less& operator =(const Less&) = delete;
 
-    ~Less(){}
-
-    void print_graphviz(FILE* out_file) const override{
-
-        if (and_equal){
-
-            fprintf(out_file, "\"%p\" [label = \"<=\" fillcolor=green]\n", this);
-        } else{
-
-            fprintf(out_file, "\"%p\" [label = \"<\" fillcolor=green]\n", this);
-        }
-
-        print_nodes(out_file);
-    }
+    void print_graphviz(FILE* out_file) const override;
 };
+
+
 
 class Bin_plus final: public Ioperator{
 
 public:
 
     Bin_plus(Ioperator* new_left, Ioperator* new_right): Ioperator(new_left, new_right){}
+    Bin_plus(const Bin_plus&) = delete;
+    ~Bin_plus() = default;
 
-    ~Bin_plus(){}
+    Bin_plus& operator =(const Bin_plus&) = delete;
 
-    void print_graphviz(FILE* out_file) const override{
-
-        fprintf(out_file, "\"%p\" [label = \"...+...\" fillcolor=green]\n", this);
-
-        print_nodes(out_file);
-    }
+    void print_graphviz(FILE* out_file) const override;
 };
+
+
 
 class Bin_minus final: public Ioperator{
 
 public:
 
     Bin_minus(Ioperator* new_left, Ioperator* new_right): Ioperator(new_left, new_right){}
+    Bin_minus(const Bin_minus&) = delete;
+    ~Bin_minus() = default;
 
-    ~Bin_minus(){}
+    Bin_minus& operator =(const Bin_minus&) = delete;
 
-    void print_graphviz(FILE* out_file) const override{
-
-        fprintf(out_file, "\"%p\" [label = \"...-...\" fillcolor=green]\n", this);
-
-        print_nodes(out_file);
-    }
+    void print_graphviz(FILE* out_file) const override;
 };
+
+
 
 class Mul final: public Ioperator{
 
 public:
 
     Mul(Ioperator* new_left, Ioperator* new_right): Ioperator(new_left, new_right){}
+    Mul(const Mul&) = delete;
+    ~Mul() = default;
 
-    ~Mul(){}
+    Mul& operator =(const Mul&) = delete;
 
-    void print_graphviz(FILE* out_file) const override{
-
-        fprintf(out_file, "\"%p\" [label = \"...*...\" fillcolor=green]\n", this);
-
-        print_nodes(out_file);
-    }
+    void print_graphviz(FILE* out_file) const override;
 };
+
+
 
 class Div final: public Ioperator{
 
 public:
 
     Div(Ioperator* new_left, Ioperator* new_right): Ioperator(new_left, new_right){}
+    Div(const Div&) = delete;
+    ~Div() = default;
 
-    ~Div(){}
+    Div& operator =(const Div&) = delete;
 
-    void print_graphviz(FILE* out_file) const override{
-
-        fprintf(out_file, "\"%p\" [label = \".../...\" fillcolor=green]\n", this);
-
-        print_nodes(out_file);
-    }
+    void print_graphviz(FILE* out_file) const override;
 };
+
+
 
 class Number_sign final: public Ioperator{
 
@@ -238,38 +183,14 @@ class Number_sign final: public Ioperator{
 
 public:
 
-    explicit Number_sign(Ioperand* new_operand, bool is_less_than_zero){
+    explicit Number_sign(Ioperand* new_operand, bool is_less_than_zero);
+    explicit Number_sign(Ioperator* new_right, bool is_less_than_zero);
+    Number_sign(const Number_sign&) = delete;
+    ~Number_sign() = default;
 
-        operand = new_operand;
-        less_than_zero = is_less_than_zero;
-    }
+    Number_sign& operator =(const Number_sign&) = delete;
 
-    explicit Number_sign(Ioperator* new_right, bool is_less_than_zero){
-
-        right = new_right;
-        less_than_zero = is_less_than_zero;
-    }
-
-    ~Number_sign(){}
-
-    void print_graphviz(FILE* out_file) const override{
-
-        if (less_than_zero){
-
-            fprintf(out_file, "\"%p\" [label = \"-...\" fillcolor=green]\n", this);
-        } else{
-
-            fprintf(out_file, "\"%p\" [label = \"+...\" fillcolor=green]\n", this);
-        }
-
-        if (operand != nullptr){
-            
-            fprintf(out_file, "\"%p\" -> \"%p\"\n", this, operand);
-            operand->print_graphviz(out_file);
-        }
-
-        print_nodes(out_file);
-    }
+    void print_graphviz(FILE* out_file) const override;
 };
 
 

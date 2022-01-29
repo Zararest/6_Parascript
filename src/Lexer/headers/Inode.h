@@ -30,6 +30,7 @@ struct Initialization_list{
 void print_type(FILE* out_file, DataType type);
 void delete_initial_list(Initialization_list init_list);
 
+
 class Inode{
     
 public:

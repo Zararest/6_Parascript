@@ -4,10 +4,17 @@
 class Ioperand: public Inode{
 
 public: 
+    
+    Ioperand() = default;
+    Ioperand(const Ioperand&) = delete;
+    virtual ~Ioperand(){};
+    
+    Ioperand& operator =(const Ioperand&) = delete;
 
     virtual void print_graphviz(FILE* out_file) const = 0;
-    virtual ~Ioperand(){};
 };
+
+
 
 class Var final: public Ioperand{ 
 
@@ -16,22 +23,16 @@ class Var final: public Ioperand{
 
 public:
 
-    Var(char* new_name, bool is_inner){//тут без копирования имени
+    Var(char* new_name, bool is_inner);
+    Var(const Var&) = delete;
+    ~Var();
 
-        name = new_name;
-        inner = is_inner;
-    } 
+    Var& operator =(const Var&) = delete;
 
-    ~Var(){
-
-        delete name;
-    }
-
-    void print_graphviz(FILE* out_file) const override{
-
-        fprintf(out_file, "\"%p\" [label = \"%s\" fillcolor=yellow]\n", this, name);
-    }
+    void print_graphviz(FILE* out_file) const override;
 };
+
+
 
 class Num final: public Ioperand{
 
@@ -39,18 +40,16 @@ class Num final: public Ioperand{
 
 public:
 
-    Num(double new_value){
+    Num(double new_value);
+    Num(const Num&) = delete;
+    ~Num() = default;
 
-        value = new_value;
-    }
+    Num& operator =(const Num&) = delete;
 
-    ~Num(){}
-
-    void print_graphviz(FILE* out_file) const override{
-
-        fprintf(out_file, "\"%p\" [label = \"%lf\" fillcolor=yellow]\n", this, value);
-    }
+    void print_graphviz(FILE* out_file) const override;
 };
+
+
 
 class String final: public Ioperand{
 
@@ -59,13 +58,11 @@ class String final: public Ioperand{
 
 public:
 
-    ~String(){
+    String() = default;
+    String(const String&) = delete;
+    ~String();
 
-        delete[] string;
-    }
+    String& operator =(const String&) = delete;
 
-    void print_graphviz(FILE* out_file) const override{
-
-        fprintf(out_file, "\"%p\" [label = \"%s\" fillcolor=yellow]\n", this, string);
-    }
+    void print_graphviz(FILE* out_file) const override;
 };
