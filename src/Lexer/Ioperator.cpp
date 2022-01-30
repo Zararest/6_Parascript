@@ -1,5 +1,27 @@
 #include "headers/Ioperator.h"
 
+void Ioperator::transfer_request_left(Irequest* cur_req){
+
+    if (left != nullptr){
+
+        left->get_request(cur_req);
+    } else{
+
+        cur_req->terminal_request();
+    }
+}
+
+void Ioperator::transfer_request_right(Irequest* cur_req){
+
+    if (right != nullptr){
+
+        right->get_request(cur_req);
+    } else{
+
+        cur_req->terminal_request();
+    }
+}
+
 void Ioperator::print_nodes(FILE* out_file) const{
 
     if (left != nullptr){
@@ -36,6 +58,11 @@ void Logical_or::print_graphviz(FILE* out_file) const{
     print_nodes(out_file);
 }
 
+void Logical_or::get_request(Irequest* cur_req){ 
+
+    cur_req->process_request(this);
+}
+
 
 
 void Logical_and::print_graphviz(FILE* out_file) const{
@@ -43,6 +70,11 @@ void Logical_and::print_graphviz(FILE* out_file) const{
     fprintf(out_file, "\"%p\" [label = \"&&\" fillcolor=green]\n", this);
 
     print_nodes(out_file);
+}
+
+void Logical_and::get_request(Irequest* cur_req){ 
+
+    cur_req->process_request(this);
 }
 
 
@@ -65,6 +97,11 @@ void Equality::print_graphviz(FILE* out_file) const{
     print_nodes(out_file);
 }
 
+void Equality::get_request(Irequest* cur_req){ 
+
+    cur_req->process_request(this);
+}
+
 
 
 Greater::Greater(Ioperator* new_left, bool is_equal, Ioperator* new_right): Ioperator(new_left, new_right){
@@ -83,6 +120,11 @@ void Greater::print_graphviz(FILE* out_file) const{
     }
 
     print_nodes(out_file);
+}
+
+void Greater::get_request(Irequest* cur_req){ 
+
+    cur_req->process_request(this);
 }
 
 
@@ -105,6 +147,11 @@ void Less::print_graphviz(FILE* out_file) const{
     print_nodes(out_file);
 }
 
+void Less::get_request(Irequest* cur_req){ 
+
+    cur_req->process_request(this);
+}
+
 
 
 void Bin_plus::print_graphviz(FILE* out_file) const{
@@ -112,6 +159,11 @@ void Bin_plus::print_graphviz(FILE* out_file) const{
     fprintf(out_file, "\"%p\" [label = \"...+...\" fillcolor=green]\n", this);
 
     print_nodes(out_file);
+}
+
+void Bin_plus::get_request(Irequest* cur_req){ 
+
+    cur_req->process_request(this);
 }
 
 
@@ -123,6 +175,11 @@ void Bin_minus::print_graphviz(FILE* out_file) const{
     print_nodes(out_file);
 }
 
+void Bin_minus::get_request(Irequest* cur_req){ 
+
+    cur_req->process_request(this);
+}
+
 
 
 void Mul::print_graphviz(FILE* out_file) const{
@@ -132,6 +189,11 @@ void Mul::print_graphviz(FILE* out_file) const{
     print_nodes(out_file);
 }
 
+void Mul::get_request(Irequest* cur_req){ 
+
+    cur_req->process_request(this);
+}
+
 
 
 void Div::print_graphviz(FILE* out_file) const{
@@ -139,6 +201,11 @@ void Div::print_graphviz(FILE* out_file) const{
     fprintf(out_file, "\"%p\" [label = \".../...\" fillcolor=green]\n", this);
 
     print_nodes(out_file);
+}
+
+void Div::get_request(Irequest* cur_req){ 
+
+    cur_req->process_request(this);
 }
 
 
@@ -172,4 +239,9 @@ void Number_sign::print_graphviz(FILE* out_file) const{
     }
 
     print_nodes(out_file);
+}
+
+void Number_sign::get_request(Irequest* cur_req){ 
+
+    cur_req->process_request(this);
 }

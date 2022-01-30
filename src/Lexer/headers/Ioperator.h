@@ -20,20 +20,13 @@ public:
 
     Ioperator& operator =(const Ioperator&) = delete;
 
+    void transfer_request_left(Irequest* cur_req);
+    void transfer_request_right(Irequest* cur_req);
+
     virtual void print_graphviz(FILE* out_file) const = 0;
 };
 
-/*
-class Custom_op_with_ret final: public Ioperator{
 
-    char* op_name = nullptr;
-    Var** arr_of_vars = nullptr;
-
-public:
-
-    Custom_op_with_ret* copy_tree() const;
-};
-*/
 
 class Logical_or final: public Ioperator{
 
@@ -46,6 +39,7 @@ public:
     Logical_or& operator =(const Logical_or&) = delete;
 
     void print_graphviz(FILE* out_file) const override;
+    void get_request(Irequest* cur_req) override;
 };
 
 
@@ -61,6 +55,7 @@ public:
     Logical_and& operator =(const Logical_and&) = delete;
 
     void print_graphviz(FILE* out_file) const override;
+    void get_request(Irequest* cur_req) override;
 };
 
 
@@ -78,6 +73,7 @@ public:
     Equality& operator =(const Equality&) = delete;
 
     void print_graphviz(FILE* out_file) const override;
+    void get_request(Irequest* cur_req) override;
 };
 
 
@@ -95,6 +91,7 @@ public:
     Equality& operator =(const Equality&) = delete;
 
     void print_graphviz(FILE* out_file) const override;
+    void get_request(Irequest* cur_req) override;
 };
 
 
@@ -112,6 +109,7 @@ public:
     Less& operator =(const Less&) = delete;
 
     void print_graphviz(FILE* out_file) const override;
+    void get_request(Irequest* cur_req) override;
 };
 
 
@@ -127,6 +125,7 @@ public:
     Bin_plus& operator =(const Bin_plus&) = delete;
 
     void print_graphviz(FILE* out_file) const override;
+    void get_request(Irequest* cur_req) override;
 };
 
 
@@ -142,6 +141,7 @@ public:
     Bin_minus& operator =(const Bin_minus&) = delete;
 
     void print_graphviz(FILE* out_file) const override;
+    void get_request(Irequest* cur_req) override;
 };
 
 
@@ -157,6 +157,7 @@ public:
     Mul& operator =(const Mul&) = delete;
 
     void print_graphviz(FILE* out_file) const override;
+    void get_request(Irequest* cur_req) override;
 };
 
 
@@ -172,6 +173,7 @@ public:
     Div& operator =(const Div&) = delete;
 
     void print_graphviz(FILE* out_file) const override;
+    void get_request(Irequest* cur_req) override;
 };
 
 
@@ -191,6 +193,7 @@ public:
     Number_sign& operator =(const Number_sign&) = delete;
 
     void print_graphviz(FILE* out_file) const override;
+    void get_request(Irequest* cur_req) override;
 };
 
 

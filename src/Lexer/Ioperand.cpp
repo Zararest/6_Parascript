@@ -22,6 +22,11 @@ void Var::print_graphviz(FILE* out_file) const{
     fprintf(out_file, "\"%p\" [label = \"%s\" fillcolor=yellow]\n", this, name);
 }
 
+void Var::get_request(Irequest* cur_req){ 
+
+    cur_req->process_request(this);
+}
+
 
 
 Num::Num(double new_value){
@@ -34,6 +39,11 @@ void Num::print_graphviz(FILE* out_file) const{
     fprintf(out_file, "\"%p\" [label = \"%lf\" fillcolor=yellow]\n", this, value);
 }
 
+void Num::get_request(Irequest* cur_req){ 
+
+    cur_req->process_request(this);
+}
+
 
 
 String::~String(){
@@ -44,4 +54,9 @@ String::~String(){
 void String::print_graphviz(FILE* out_file) const{
 
     fprintf(out_file, "\"%p\" [label = \"%s\" fillcolor=yellow]\n", this, string);
+}
+
+void String::get_request(Irequest* cur_req){ 
+
+    cur_req->process_request(this);
 }

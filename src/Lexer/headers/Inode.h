@@ -37,7 +37,7 @@ class Inode{
     
 public:
     
-    virtual void get_request(Irequest* cur_req){};
+    virtual void get_request(Irequest* cur_req) = 0;
     virtual void print_graphviz(FILE* out_file) const = 0;
     virtual ~Inode(){};
 };

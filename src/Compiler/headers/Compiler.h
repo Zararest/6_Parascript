@@ -11,14 +11,40 @@
 
 class Asm_code_req: public Irequest{
 
+    FILE* asm_file = nullptr;
 
+    int num_of_accesses = 0;
+    int num_of_ret_vars = 0;
+    int stack_size = 0;
+    bool first_statement = true;
+
+    void complite_init_list(int num_of_empty_vars);
+    void init_vars(const Initialization_list& init_list);
+    void dump_vars(const Initialization_list& init_list);
+
+public:
+
+    Asm_code_req(FILE* new_asm_file);
+    Asm_code_req(const Asm_code_req&) = delete;
+    ~Asm_code_req() override = default;
+
+    Asm_code_req& operator =(const Asm_code_req) = delete;
+
+    void process_request(Statement* cur_node);
+    void process_request(If* cur_node);
 };
 
 class Compiler{
 
+    Icontrol_struct* synt_tree_root = nullptr;
 
 public:
 
     Compiler(Icontrol_struct* new_syntax_tree);
+    Compiler(const Compiler&) = delete;
+    virtual ~Compiler();
 
+    Compiler& operator=(const Compiler&) = delete;
+
+    void generate_asm_code(const char* out_file_name);
 };

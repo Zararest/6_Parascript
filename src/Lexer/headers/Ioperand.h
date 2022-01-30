@@ -12,6 +12,7 @@ public:
     Ioperand& operator =(const Ioperand&) = delete;
 
     virtual void print_graphviz(FILE* out_file) const = 0;
+    virtual void get_request(Irequest* cur_req) = 0;
 };
 
 
@@ -30,6 +31,7 @@ public:
     Var& operator =(const Var&) = delete;
 
     void print_graphviz(FILE* out_file) const override;
+    void get_request(Irequest* cur_req) override;
 };
 
 
@@ -47,6 +49,7 @@ public:
     Num& operator =(const Num&) = delete;
 
     void print_graphviz(FILE* out_file) const override;
+    void get_request(Irequest* cur_req) override;
 };
 
 
@@ -65,4 +68,5 @@ public:
     String& operator =(const String&) = delete;
 
     void print_graphviz(FILE* out_file) const override;
+    void get_request(Irequest* cur_req) override;
 };

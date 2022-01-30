@@ -9,7 +9,7 @@ protected:
     Icontrol_struct* next_struct = nullptr;
 
     void print_next(FILE* out_file) const;
-
+    
 public:
     
     Icontrol_struct() = default;
@@ -19,8 +19,10 @@ public:
     Icontrol_struct& operator =(const Icontrol_struct&) = delete;
     
     void add_control_struct(Icontrol_struct* new_struct);
+    void transfer_request(Irequest* cur_req);
 
     virtual void print_graphviz(FILE* out_file) const = 0;
+    virtual void get_request(Irequest* cur_req) = 0;
 };
 
 
@@ -36,6 +38,7 @@ public:
 
     void print_graphviz(FILE* out_file) const override{};
     Overload_op* copy_tree() const;
+    void get_request(Irequest* cur_req) override{}
 };
 
 class Overload_set final: public Icontrol_struct{
@@ -48,6 +51,7 @@ public:
     void add_operator(Overload_op* new_op){ } //должен прокидывать эту ссылку через цепочку операторов(first_overload)
     bool add_name(char* name){ return false; }
     void print_graphviz(FILE* out_file) const override{}
+    void get_request(Irequest* cur_req) override{}
 };
 
 class Use final: public Icontrol_struct{
@@ -79,7 +83,11 @@ public:
     bool add_init_list(Initialization_list new_init_list);
     bool add_name(char* name);
 
+    void print_name(FILE* out_file){};
+    const Initialization_list& get_init_list_link(){};
+
     void print_graphviz(FILE* out_file) const override;
+    void get_request(Irequest* cur_req) override;
 };
 
 

@@ -28,7 +28,7 @@ public:
 
     Irequest() = default;
     Irequest(const Irequest&) = default;
-    virtual ~Irequest() = 0;
+    virtual ~Irequest(){};
 
     virtual void process_request(Call* cur_node){}
     virtual void process_request(Return_statement* cur_node){}
@@ -54,5 +54,8 @@ public:
     virtual void process_request(Mul* cur_node){}
     virtual void process_request(Div* cur_node){}
     virtual void process_request(Number_sign* cur_node){}
+
+    virtual void terminal_request(){}
 };
 
+//Irequest::~Irequest(){}

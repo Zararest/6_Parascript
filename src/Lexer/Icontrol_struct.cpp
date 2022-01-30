@@ -10,6 +10,17 @@ void Icontrol_struct::print_next(FILE* out_file) const{
     }
 }
 
+void Icontrol_struct::transfer_request(Irequest* cur_req){
+
+    if (next_struct != nullptr){
+
+        next_struct->get_request(cur_req);
+    } else{
+
+        cur_req->terminal_request();
+    }
+}
+
 void Icontrol_struct::add_control_struct(Icontrol_struct* new_struct){   //тоже пробрасывает через цепочку, но теперь через control_struct
 
     if (next_struct != nullptr){
@@ -96,4 +107,9 @@ void Statement::print_graphviz(FILE* out_file) const{
     }
 
     print_next(out_file);
+}
+
+void Statement::get_request(Irequest* cur_req){ 
+
+    cur_req->process_request(this);
 }
