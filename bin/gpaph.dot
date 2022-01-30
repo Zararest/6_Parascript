@@ -1,0 +1,73 @@
+digraph Dump{
+node[color=red,fontsize=14, style=filled]
+"0x55f398145530" [label = "Statement:init_stat[int input_num, int i]" fillcolor = red]
+"0x55f398145530" -> "0x55f398145620"
+"0x55f398145620" [label = "Call:get_int" fillcolor=lightblue]
+"0x55f398145620" -> "0x55f398145670"
+"0x55f398145670" [label = "input_num" fillcolor=yellow]
+"0x55f398145620" -> "0x55f3981456b0"
+"0x55f398145620" -> "0x55f3981456b0"
+"0x55f3981456b0" [label = "Call:put_float" fillcolor=lightblue]
+"0x55f3981456b0" -> "0x55f398145720"
+"0x55f398145720" [label = "input_num" fillcolor=yellow]
+"0x55f398145530" -> "0x55f398145760"
+"0x55f398145530" -> "0x55f398145760"
+"0x55f398145760" [label = "Statement:fibonachi[int cur_num, int i, int input_num]" fillcolor = red]
+"0x55f398145760" -> "0x55f398145820"
+"0x55f398145820" [label = "If" fillcolor=lightblue]
+"0x55f398145820" -> "0x55f3981459a0"
+"0x55f3981459a0" [label = "Call:next_fibonachi" fillcolor=lightblue]
+"0x55f3981459a0" -> "0x55f398145a10"
+"0x55f398145a10" [label = "cur_num" fillcolor=yellow]
+"0x55f3981459a0" -> "0x55f398145a70"
+"0x55f398145a70" [label = "i" fillcolor=yellow]
+"0x55f3981459a0" -> "0x55f398145ab0"
+"0x55f398145ab0" [label = "input_num" fillcolor=yellow]
+"0x55f398145820" -> "0x55f398145af0"
+"0x55f398145af0" [label = "Call:end" fillcolor=lightblue]
+"0x55f398145af0" -> "0x55f398145b60"
+"0x55f398145b60" [label = "cur_num" fillcolor=yellow]
+"0x55f398145820" -> "0x55f398145970"
+"0x55f398145970" [label = ">=" fillcolor=green]
+"0x55f398145970" -> "0x55f3981458d0"
+"0x55f3981458d0" [label = "+..." fillcolor=green]
+"0x55f3981458d0" -> "0x55f3981458b0"
+"0x55f3981458b0" [label = "i" fillcolor=yellow]
+"0x55f398145970" -> "0x55f398145940"
+"0x55f398145940" [label = "+..." fillcolor=green]
+"0x55f398145940" -> "0x55f398145920"
+"0x55f398145920" [label = "input_num" fillcolor=yellow]
+"0x55f398145760" -> "0x55f398145bc0"
+"0x55f398145760" -> "0x55f398145bc0"
+"0x55f398145bc0" [label = "Statement:next_fibonachi[int cur_num, int i, int input_num]" fillcolor = red]
+"0x55f398145bc0" -> "0x55f398145c60"
+"0x55f398145c60" [label = "=" fillcolor=lightblue]
+"0x55f398145c60" -> "0x55f398145cf0"
+"0x55f398145cf0" [label = "i" fillcolor=yellow]
+"0x55f398145c60" -> "0x55f398145dd0"
+"0x55f398145dd0" [label = "...+..." fillcolor=green]
+"0x55f398145dd0" -> "0x55f398145d50"
+"0x55f398145d50" [label = "+..." fillcolor=green]
+"0x55f398145d50" -> "0x55f398145d30"
+"0x55f398145d30" [label = "i" fillcolor=yellow]
+"0x55f398145dd0" -> "0x55f398145da0"
+"0x55f398145da0" [label = "+..." fillcolor=green]
+"0x55f398145da0" -> "0x55f398145d80"
+"0x55f398145d80" [label = "1.000000" fillcolor=yellow]
+"0x55f398145c60" -> "0x55f398145df0"
+"0x55f398145c60" -> "0x55f398145df0"
+"0x55f398145df0" [label = "Call:fibonachi" fillcolor=lightblue]
+"0x55f398145df0" -> "0x55f398145e60"
+"0x55f398145e60" [label = "cur_num" fillcolor=yellow]
+"0x55f398145df0" -> "0x55f398145ec0"
+"0x55f398145ec0" [label = "i" fillcolor=yellow]
+"0x55f398145df0" -> "0x55f398145f00"
+"0x55f398145f00" [label = "input_num" fillcolor=yellow]
+"0x55f398145bc0" -> "0x55f398145f40"
+"0x55f398145bc0" -> "0x55f398145f40"
+"0x55f398145f40" [label = "Statement:end[int out_num]" fillcolor = red]
+"0x55f398145f40" -> "0x55f398145fc0"
+"0x55f398145fc0" [label = "Call:put_float" fillcolor=lightblue]
+"0x55f398145fc0" -> "0x55f398146030"
+"0x55f398146030" [label = "out_num" fillcolor=yellow]
+}

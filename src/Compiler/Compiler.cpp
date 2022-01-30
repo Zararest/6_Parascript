@@ -28,6 +28,9 @@ void Compiler::generate_asm_code(const char* out_file_name){
 
     Asm_code_req new_req(asm_file, statements);
 
+    FILE* file = fopen("../bin/graph.dot", "w");
+    synt_tree_root->print_graphviz(file);
+
     synt_tree_root->get_request(&new_req);
 
     fclose(asm_file);

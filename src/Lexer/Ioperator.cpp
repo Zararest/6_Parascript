@@ -237,6 +237,22 @@ Number_sign::Number_sign(Ioperator* new_right, bool is_less_than_zero){
     less_than_zero = is_less_than_zero;
 }
 
+bool Number_sign::is_less_than_zero(){
+
+    return less_than_zero;
+}
+
+void Number_sign::transfer_request_operand(Irequest* cur_req){
+
+    if (operand != nullptr){
+
+        operand->get_request(cur_req);
+    } else{
+
+        cur_req->terminal_request();
+    }
+}
+
 void Number_sign::print_graphviz(FILE* out_file) const{
 
     if (less_than_zero){

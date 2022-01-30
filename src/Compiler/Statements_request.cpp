@@ -17,7 +17,7 @@ Statement_info::Statement_info(char* new_name, int num_of_ret_vars){
 Statement_info::Statement_info(const Statement_info& old_obj){
 
     assert(old_obj.name != nullptr);
-    int name_size = strlen(old_obj.name);
+    int name_size = strlen(old_obj.name) + 1;
     assert(name_size > 0);
 
     name = new char[name_size];

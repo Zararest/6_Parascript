@@ -1,8 +1,20 @@
 
-{while_body}    <[int a]  >
+{init_stat}<[int input_num, int cur_num, int prev_num, int i]  get_int->[input_num]
+                                                        cur_num = 1;
+                                                        prev_num = 0;
+                                                        fibonachi->[cur_num, prev_num, i, input_num] >
 
-{name} <[int a, char b]
+{fibonachi}<[int cur_num, int prev_num, int i, int input_num]   if (i <= input_num){ 
+                                                                        next_fibonachi->[cur_num, prev_num, i, input_num],
+                                                                        end->[cur_num]} >
 
-        while_body->[inner a] >
+{next_fibonachi}<[int cur_num, int prev_num, int i, int input_num, int tmp]     i = i + 1;
+                                                                                tmp = cur_num;
+                                                                                cur_num = tmp + prev_num;
+                                                                                prev_num = tmp;
+                                                                                fibonachi->[cur_num, prev_num, i, input_num]>
+
+{end}<[int out_num]     put_float->[out_num]>
+
 
 

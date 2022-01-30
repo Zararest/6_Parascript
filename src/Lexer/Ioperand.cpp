@@ -27,7 +27,7 @@ void Var::print_graphviz(FILE* out_file) const{
 char* Var::get_name_copy() const{
 
     assert(name != nullptr);
-    int name_size = strlen(name);
+    int name_size = strlen(name) + 1;
     assert(name_size > 0);
 
     char* name_copy = new char[name_size];

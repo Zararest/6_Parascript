@@ -198,6 +198,10 @@ public:
 
     Number_sign& operator =(const Number_sign&) = delete;
 
+    bool is_less_than_zero();
+
+    void transfer_request_operand(Irequest* cur_req);
+
     void print_graphviz(FILE* out_file) const override;
     void get_request(Irequest* cur_req) override;
 };

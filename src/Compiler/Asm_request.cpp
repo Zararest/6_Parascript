@@ -7,6 +7,13 @@ Asm_code_req::Asm_code_req(FILE* new_asm_file, std::vector<Statement_info>& stat
     asm_file = new_asm_file;
 }
 
+void Asm_code_req::init_first_statement(char* statement_name){
+
+    int num_of_vars = get_number_of_ret_vars(statement_name);
+
+    complete_init_list(num_of_vars);
+}
+
 /**
  * @brief Если первое выражение, то прописывает его вызов.
  *    
@@ -21,7 +28,10 @@ void Asm_code_req::process_request(Statement* cur_node){
 
     if (first_statement){
 
+        init_first_statement(cur_statment_name);
+
         fprintf(asm_file, "CALL %s\n\n", cur_statment_name);
+
         this_is_first = true;
         first_statement = false;
     }
@@ -154,10 +164,10 @@ void Asm_code_req::process_request(If* cur_node){
         cur_node->transfer_request_call(this, i);
 
         fprintf(asm_file, "\tJN %i_end\n", cur_file_pos); //прыжок в конец
-        fprintf(asm_file, "@%i_%i_next\n", cur_file_pos, i);  //метка для следующего вызова
+        fprintf(asm_file, "@%i_%i_next:\n", cur_file_pos, i);  //метка для следующего вызова
     }
 
-    fprintf(asm_file, "@%i_end\n", cur_file_pos);
+    fprintf(asm_file, "@%i_end:\n", cur_file_pos);
 
     cur_node->transfer_request(this); //вызов следующего выражения
 }   
@@ -296,7 +306,7 @@ int Asm_code_req::get_number_of_ret_vars(char* statement_name) const{
 
     for (int i = 0; i < statements.size(); i++){
 
-        if (statements[i].cmp_name(statement_name) == 0){
+        if (statements[i].cmp_name(statement_name)){
 
             return statements[i].get_number_of_ret_vars();
         }
@@ -368,7 +378,7 @@ void Asm_code_req::process_request(Cycle* cur_node){
     int cur_file_pos = ftell(asm_file);
     int prev_num_of_accesses = num_of_accesses;
 
-    fprintf(asm_file, "@%i_loop_start\n", cur_file_pos);
+    fprintf(asm_file, "@%i_loop_start:\n", cur_file_pos);
 
     cur_node->transfer_request_condition(this);
 
@@ -387,7 +397,7 @@ void Asm_code_req::process_request(Cycle* cur_node){
     cur_node->transfer_request_call(this);
 
     fprintf(asm_file, "\tJN %i_loop_start\n", cur_file_pos);
-    fprintf(asm_file, "@%i_end\n", cur_file_pos);
+    fprintf(asm_file, "@%i_end:\n", cur_file_pos);
 
     cur_node->transfer_request(this);
 }
@@ -556,11 +566,11 @@ void Asm_code_req::process_request(Less* cur_node){
     fprintf(asm_file, "\tPUSH D_E\n");
     fprintf(asm_file, "\tJN %i_end\n", cur_file_pos);
 
-    fprintf(asm_file, "@%i_zero\n", cur_file_pos);
+    fprintf(asm_file, "@%i_zero:\n", cur_file_pos);
     fprintf(asm_file, "\tMOV D_E 0\n");
     fprintf(asm_file, "\tPUSH D_E\n");
 
-    fprintf(asm_file, "@%i_end\n", cur_file_pos);
+    fprintf(asm_file, "@%i_end:\n", cur_file_pos);
 }
 
 void Asm_code_req::process_request(Greater* cur_node){
@@ -584,11 +594,11 @@ void Asm_code_req::process_request(Greater* cur_node){
     fprintf(asm_file, "\tPUSH D_E\n");
     fprintf(asm_file, "\tJN %i_end\n", cur_file_pos);
 
-    fprintf(asm_file, "@%i_zero\n", cur_file_pos);
+    fprintf(asm_file, "@%i_zero:\n", cur_file_pos);
     fprintf(asm_file, "\tMOV D_E 0\n");
     fprintf(asm_file, "\tPUSH D_E\n");
 
-    fprintf(asm_file, "@%i_end\n", cur_file_pos);
+    fprintf(asm_file, "@%i_end:\n", cur_file_pos);
 }
 
 void Asm_code_req::process_request(Equality* cur_node){
@@ -609,7 +619,7 @@ void Asm_code_req::process_request(Equality* cur_node){
         fprintf(asm_file, "\tPUSH D_E\n");
         fprintf(asm_file, "\tJN %i_end\n", cur_file_pos);
 
-        fprintf(asm_file, "@%i_one\n", cur_file_pos);
+        fprintf(asm_file, "@%i_one:\n", cur_file_pos);
         fprintf(asm_file, "\tMOV D_E 1\n");
         fprintf(asm_file, "\tPUSH D_E\n");
 
@@ -620,12 +630,12 @@ void Asm_code_req::process_request(Equality* cur_node){
         fprintf(asm_file, "\tPUSH D_E\n");
         fprintf(asm_file, "\tJN %i_end\n", cur_file_pos);
 
-        fprintf(asm_file, "@%i_zero\n", cur_file_pos);
+        fprintf(asm_file, "@%i_zero:\n", cur_file_pos);
         fprintf(asm_file, "\tMOV D_E 0\n");
         fprintf(asm_file, "\tPUSH D_E\n");
     }
 
-    fprintf(asm_file, "@%i_end\n", cur_file_pos);
+    fprintf(asm_file, "@%i_end:\n", cur_file_pos);
 }
 
 void Asm_code_req::process_request(Var* cur_node){
@@ -647,6 +657,20 @@ void Asm_code_req::process_request(Num* cur_node){
 
     fprintf(asm_file, "\tMOV P_R %lf\n", cur_val);
     fprintf(asm_file, "\tPUSH P_R\n");
+}
+
+void Asm_code_req::process_request(Number_sign* cur_node){
+
+    num_of_accesses++;
+
+    cur_node->transfer_request_operand(this);
+
+    if (cur_node->is_less_than_zero()){
+
+        fprintf(asm_file, "\tMOV B_A -1\n");
+        fprintf(asm_file, "\tPUSH B_A\n");
+        fprintf(asm_file, "\tMUL\n");
+    }
 }
 
 

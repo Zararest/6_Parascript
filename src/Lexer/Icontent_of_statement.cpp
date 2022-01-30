@@ -80,7 +80,7 @@ void Call::add_new_var(Var* new_var){
 char* Call::get_stat_name_copy() const{
 
     assert(statement_name != nullptr);
-    int name_size = strlen(statement_name);
+    int name_size = strlen(statement_name) + 1;
     assert(name_size > 0);
 
     char* name_copy = new char[name_size];

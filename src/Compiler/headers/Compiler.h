@@ -65,6 +65,7 @@ class Asm_code_req: public Irequest{
     void pass_vars(Call* cur_call);
     void get_vars(Call* cur_call);
     int get_number_of_ret_vars(char* statement_name) const;
+    void init_first_statement(char* statement_name);
 
     void push_var(char* var_name);
     void pop_var(char* var_name);
@@ -95,6 +96,8 @@ public:
 
     void process_request(Var* cur_node);
     void process_request(Num* cur_node);
+
+    void process_request(Number_sign* cur_node);
 };
 
 class Compiler{

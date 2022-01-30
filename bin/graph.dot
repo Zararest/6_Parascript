@@ -1,52 +1,131 @@
-digraph Dump{
-node[color=red,fontsize=14, style=filled]
-"0x55695e5ebf00" [label = "Statement:while_body[]" fillcolor = red]
-"0x55695e5ebf00" -> "0x55695e5ebfa0"
-"0x55695e5ebfa0" [label = "=" fillcolor=lightblue]
-"0x55695e5ebfa0" -> "0x55695e5ebff0"
-"0x55695e5ebff0" [label = "a" fillcolor=yellow]
-"0x55695e5ebfa0" -> "0x55695e5ec0d0"
-"0x55695e5ec0d0" [label = "...+..." fillcolor=green]
-"0x55695e5ec0d0" -> "0x55695e5ec050"
-"0x55695e5ec050" [label = "+..." fillcolor=green]
-"0x55695e5ec050" -> "0x55695e5ec030"
-"0x55695e5ec030" [label = "a" fillcolor=yellow]
-"0x55695e5ec0d0" -> "0x55695e5ec0a0"
-"0x55695e5ec0a0" [label = "+..." fillcolor=green]
-"0x55695e5ec0a0" -> "0x55695e5ec080"
-"0x55695e5ec080" [label = "1.000000" fillcolor=yellow]
-"0x55695e5ebf00" -> "0x55695e5ec0f0"
-"0x55695e5ebf00" -> "0x55695e5ec0f0"
-"0x55695e5ec0f0" [label = "Statement:name[]" fillcolor = red]
-"0x55695e5ec0f0" -> "0x55695e5ec1e0"
-"0x55695e5ec1e0" [label = "=" fillcolor=lightblue]
-"0x55695e5ec1e0" -> "0x55695e5ec210"
-"0x55695e5ec210" [label = "a" fillcolor=yellow]
-"0x55695e5ec1e0" -> "0x55695e5ec2f0"
-"0x55695e5ec2f0" [label = "...+..." fillcolor=green]
-"0x55695e5ec2f0" -> "0x55695e5ec250"
-"0x55695e5ec250" [label = "+..." fillcolor=green]
-"0x55695e5ec250" -> "0x55695e5ec230"
-"0x55695e5ec230" [label = "1.000000" fillcolor=yellow]
-"0x55695e5ec2f0" -> "0x55695e5ec2c0"
-"0x55695e5ec2c0" [label = "+..." fillcolor=green]
-"0x55695e5ec2c0" -> "0x55695e5ec2a0"
-"0x55695e5ec2a0" [label = "b" fillcolor=yellow]
-"0x55695e5ec1e0" -> "0x55695e5ec310"
-"0x55695e5ec1e0" -> "0x55695e5ec310"
-"0x55695e5ec310" [label = "While" fillcolor=lightblue]
-"0x55695e5ec310" -> "0x55695e5ec430"
-"0x55695e5ec430" [label = "Call:while_body" fillcolor=lightblue]
-"0x55695e5ec430" -> "0x55695e5ec4a0"
-"0x55695e5ec4a0" [label = "a" fillcolor=yellow]
-"0x55695e5ec310" -> "0x55695e5ec400"
-"0x55695e5ec400" [label = "<" fillcolor=green]
-"0x55695e5ec400" -> "0x55695e5ec380"
-"0x55695e5ec380" [label = "+..." fillcolor=green]
-"0x55695e5ec380" -> "0x55695e5ec360"
-"0x55695e5ec360" [label = "a" fillcolor=yellow]
-"0x55695e5ec400" -> "0x55695e5ec3d0"
-"0x55695e5ec3d0" [label = "+..." fillcolor=green]
-"0x55695e5ec3d0" -> "0x55695e5ec3b0"
-"0x55695e5ec3b0" [label = "10.000000" fillcolor=yellow]
-}
+"0x55aa52e76200" [label = "Statement:init_stat[int input_num, int cur_num, int prev_num, int i]" fillcolor = red]
+"0x55aa52e76200" -> "0x55aa52e762c0"
+"0x55aa52e762c0" [label = "Call:get_int" fillcolor=lightblue]
+"0x55aa52e762c0" -> "0x55aa52e763e0"
+"0x55aa52e763e0" [label = "input_num" fillcolor=yellow]
+"0x55aa52e762c0" -> "0x55aa52e76420"
+"0x55aa52e762c0" -> "0x55aa52e76420"
+"0x55aa52e76420" [label = "=" fillcolor=lightblue]
+"0x55aa52e76420" -> "0x55aa52e76470"
+"0x55aa52e76470" [label = "cur_num" fillcolor=yellow]
+"0x55aa52e76420" -> "0x55aa52e764b0"
+"0x55aa52e764b0" [label = "+..." fillcolor=green]
+"0x55aa52e764b0" -> "0x55aa52e76490"
+"0x55aa52e76490" [label = "1.000000" fillcolor=yellow]
+"0x55aa52e76420" -> "0x55aa52e764e0"
+"0x55aa52e76420" -> "0x55aa52e764e0"
+"0x55aa52e764e0" [label = "=" fillcolor=lightblue]
+"0x55aa52e764e0" -> "0x55aa52e76530"
+"0x55aa52e76530" [label = "prev_num" fillcolor=yellow]
+"0x55aa52e764e0" -> "0x55aa52e76570"
+"0x55aa52e76570" [label = "+..." fillcolor=green]
+"0x55aa52e76570" -> "0x55aa52e76550"
+"0x55aa52e76550" [label = "0.000000" fillcolor=yellow]
+"0x55aa52e764e0" -> "0x55aa52e765a0"
+"0x55aa52e764e0" -> "0x55aa52e765a0"
+"0x55aa52e765a0" [label = "Call:fibonachi" fillcolor=lightblue]
+"0x55aa52e765a0" -> "0x55aa52e76610"
+"0x55aa52e76610" [label = "cur_num" fillcolor=yellow]
+"0x55aa52e765a0" -> "0x55aa52e76670"
+"0x55aa52e76670" [label = "prev_num" fillcolor=yellow]
+"0x55aa52e765a0" -> "0x55aa52e766b0"
+"0x55aa52e766b0" [label = "i" fillcolor=yellow]
+"0x55aa52e765a0" -> "0x55aa52e766f0"
+"0x55aa52e766f0" [label = "input_num" fillcolor=yellow]
+"0x55aa52e76200" -> "0x55aa52e762f0"
+"0x55aa52e76200" -> "0x55aa52e762f0"
+"0x55aa52e762f0" [label = "Statement:fibonachi[int cur_num, int prev_num, int i, int input_num]" fillcolor = red]
+"0x55aa52e762f0" -> "0x55aa52e767a0"
+"0x55aa52e767a0" [label = "If" fillcolor=lightblue]
+"0x55aa52e767a0" -> "0x55aa52e76990"
+"0x55aa52e76990" [label = "Call:next_fibonachi" fillcolor=lightblue]
+"0x55aa52e76990" -> "0x55aa52e76a00"
+"0x55aa52e76a00" [label = "cur_num" fillcolor=yellow]
+"0x55aa52e76990" -> "0x55aa52e76a60"
+"0x55aa52e76a60" [label = "prev_num" fillcolor=yellow]
+"0x55aa52e76990" -> "0x55aa52e76aa0"
+"0x55aa52e76aa0" [label = "i" fillcolor=yellow]
+"0x55aa52e76990" -> "0x55aa52e76ae0"
+"0x55aa52e76ae0" [label = "input_num" fillcolor=yellow]
+"0x55aa52e767a0" -> "0x55aa52e76b30"
+"0x55aa52e76b30" [label = "Call:end" fillcolor=lightblue]
+"0x55aa52e76b30" -> "0x55aa52e76ba0"
+"0x55aa52e76ba0" [label = "prev_num" fillcolor=yellow]
+"0x55aa52e767a0" -> "0x55aa52e76960"
+"0x55aa52e76960" [label = "<=" fillcolor=green]
+"0x55aa52e76960" -> "0x55aa52e768c0"
+"0x55aa52e768c0" [label = "+..." fillcolor=green]
+"0x55aa52e768c0" -> "0x55aa52e768a0"
+"0x55aa52e768a0" [label = "i" fillcolor=yellow]
+"0x55aa52e76960" -> "0x55aa52e76930"
+"0x55aa52e76930" [label = "+..." fillcolor=green]
+"0x55aa52e76930" -> "0x55aa52e76910"
+"0x55aa52e76910" [label = "input_num" fillcolor=yellow]
+"0x55aa52e762f0" -> "0x55aa52e767d0"
+"0x55aa52e762f0" -> "0x55aa52e767d0"
+"0x55aa52e767d0" [label = "Statement:next_fibonachi[int cur_num, int prev_num, int i, int input_num, int tmp]" fillcolor = red]
+"0x55aa52e767d0" -> "0x55aa52e76c60"
+"0x55aa52e76c60" [label = "=" fillcolor=lightblue]
+"0x55aa52e76c60" -> "0x55aa52e76de0"
+"0x55aa52e76de0" [label = "i" fillcolor=yellow]
+"0x55aa52e76c60" -> "0x55aa52e76ec0"
+"0x55aa52e76ec0" [label = "...+..." fillcolor=green]
+"0x55aa52e76ec0" -> "0x55aa52e76e40"
+"0x55aa52e76e40" [label = "+..." fillcolor=green]
+"0x55aa52e76e40" -> "0x55aa52e76e20"
+"0x55aa52e76e20" [label = "i" fillcolor=yellow]
+"0x55aa52e76ec0" -> "0x55aa52e76e90"
+"0x55aa52e76e90" [label = "+..." fillcolor=green]
+"0x55aa52e76e90" -> "0x55aa52e76e70"
+"0x55aa52e76e70" [label = "1.000000" fillcolor=yellow]
+"0x55aa52e76c60" -> "0x55aa52e76ee0"
+"0x55aa52e76c60" -> "0x55aa52e76ee0"
+"0x55aa52e76ee0" [label = "=" fillcolor=lightblue]
+"0x55aa52e76ee0" -> "0x55aa52e76f30"
+"0x55aa52e76f30" [label = "tmp" fillcolor=yellow]
+"0x55aa52e76ee0" -> "0x55aa52e76f90"
+"0x55aa52e76f90" [label = "+..." fillcolor=green]
+"0x55aa52e76f90" -> "0x55aa52e76f70"
+"0x55aa52e76f70" [label = "cur_num" fillcolor=yellow]
+"0x55aa52e76ee0" -> "0x55aa52e76fc0"
+"0x55aa52e76ee0" -> "0x55aa52e76fc0"
+"0x55aa52e76fc0" [label = "=" fillcolor=lightblue]
+"0x55aa52e76fc0" -> "0x55aa52e77010"
+"0x55aa52e77010" [label = "cur_num" fillcolor=yellow]
+"0x55aa52e76fc0" -> "0x55aa52e77110"
+"0x55aa52e77110" [label = "...+..." fillcolor=green]
+"0x55aa52e77110" -> "0x55aa52e77070"
+"0x55aa52e77070" [label = "+..." fillcolor=green]
+"0x55aa52e77070" -> "0x55aa52e77050"
+"0x55aa52e77050" [label = "tmp" fillcolor=yellow]
+"0x55aa52e77110" -> "0x55aa52e770e0"
+"0x55aa52e770e0" [label = "+..." fillcolor=green]
+"0x55aa52e770e0" -> "0x55aa52e770c0"
+"0x55aa52e770c0" [label = "prev_num" fillcolor=yellow]
+"0x55aa52e76fc0" -> "0x55aa52e77130"
+"0x55aa52e76fc0" -> "0x55aa52e77130"
+"0x55aa52e77130" [label = "=" fillcolor=lightblue]
+"0x55aa52e77130" -> "0x55aa52e77180"
+"0x55aa52e77180" [label = "prev_num" fillcolor=yellow]
+"0x55aa52e77130" -> "0x55aa52e771e0"
+"0x55aa52e771e0" [label = "+..." fillcolor=green]
+"0x55aa52e771e0" -> "0x55aa52e771c0"
+"0x55aa52e771c0" [label = "tmp" fillcolor=yellow]
+"0x55aa52e77130" -> "0x55aa52e77210"
+"0x55aa52e77130" -> "0x55aa52e77210"
+"0x55aa52e77210" [label = "Call:fibonachi" fillcolor=lightblue]
+"0x55aa52e77210" -> "0x55aa52e77280"
+"0x55aa52e77280" [label = "cur_num" fillcolor=yellow]
+"0x55aa52e77210" -> "0x55aa52e772e0"
+"0x55aa52e772e0" [label = "prev_num" fillcolor=yellow]
+"0x55aa52e77210" -> "0x55aa52e77320"
+"0x55aa52e77320" [label = "i" fillcolor=yellow]
+"0x55aa52e77210" -> "0x55aa52e77360"
+"0x55aa52e77360" [label = "input_num" fillcolor=yellow]
+"0x55aa52e767d0" -> "0x55aa52e76c90"
+"0x55aa52e767d0" -> "0x55aa52e76c90"
+"0x55aa52e76c90" [label = "Statement:end[int out_num]" fillcolor = red]
+"0x55aa52e76c90" -> "0x55aa52e773f0"
+"0x55aa52e773f0" [label = "Call:put_float" fillcolor=lightblue]
+"0x55aa52e773f0" -> "0x55aa52e77460"
+"0x55aa52e77460" [label = "out_num" fillcolor=yellow]

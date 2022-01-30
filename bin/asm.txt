@@ -1,30 +1,196 @@
-CALL while_body
+	MOV W_A 0
+	PUSH W_A
+	PUSH W_A
+	PUSH W_A
+	PUSH W_A
+CALL init_stat
 
-function while_body
-	while_body_a DD
+function init_stat
+	init_stat_i DD
 	POP D_A
-	MOV while_body_a D_A
-	MOV D_A while_body_a
+	MOV init_stat_i D_A
+	init_stat_prev_num DD
+	POP D_A
+	MOV init_stat_prev_num D_A
+	init_stat_cur_num DD
+	POP D_A
+	MOV init_stat_cur_num D_A
+	init_stat_input_num DD
+	POP D_A
+	MOV init_stat_input_num D_A
+	IN D_B
+	MOV init_stat_input_num D_B
+	MOV P_R 1.000000
+	PUSH P_R
+	POP D_A
+	MOV init_stat_cur_num D_A
+	MOV P_R 0.000000
+	PUSH P_R
+	POP D_A
+	MOV init_stat_prev_num D_A
+	MOV D_A init_stat_cur_num
+	PUSH D_A
+	MOV D_A init_stat_prev_num
+	PUSH D_A
+	MOV D_A init_stat_i
+	PUSH D_A
+	MOV D_A init_stat_input_num
+	PUSH D_A
+	CALL fibonachi
+	POP B_A
+	POP B_A
+	POP B_A
+	POP B_A
+	MOV D_A init_stat_i
+	PUSH D_A
+	MOV D_A init_stat_prev_num
+	PUSH D_A
+	MOV D_A init_stat_cur_num
+	PUSH D_A
+	MOV D_A init_stat_input_num
 	PUSH D_A
 RET
-function name
-	name_b DB
-	POP B_A
-	MOV name_b B_A
-	name_a DD
+function fibonachi
+	fibonachi_input_num DD
 	POP D_A
-	MOV name_a D_A
-	MOV D_A name_a
+	MOV fibonachi_input_num D_A
+	fibonachi_i DD
+	POP D_A
+	MOV fibonachi_i D_A
+	fibonachi_prev_num DD
+	POP D_A
+	MOV fibonachi_prev_num D_A
+	fibonachi_cur_num DD
+	POP D_A
+	MOV fibonachi_cur_num D_A
+	MOV D_A fibonachi_i
+	PUSH D_A
+	MOV D_A fibonachi_input_num
+	PUSH D_A
+	CMP
+	JL 1139_zero
+	MOV D_E 1
+	PUSH D_E
+	JN 1139_end
+@1139_zero:
+	MOV D_E 0
+	PUSH D_E
+@1139_end:
+	POP D_E
+	PUSH D_E
+	MOV B_A 0
+	PUSH B_A
+	CMP
+	JL 1245_0_next
+	MOV D_A fibonachi_cur_num
+	PUSH D_A
+	MOV D_A fibonachi_prev_num
+	PUSH D_A
+	MOV D_A fibonachi_i
+	PUSH D_A
+	MOV D_A fibonachi_input_num
 	PUSH D_A
 	MOV W_A 0
 	PUSH W_A
-	CALL while_body
+	CALL next_fibonachi
 	POP B_A
-	POP D_A
-	MOV name_a D_A
-	MOV B_A name_b
+	POP B_A
+	POP B_A
+	POP B_A
+	POP B_A
+	JN 1245_end
+@1245_0_next:
+	PUSH D_E
+	MOV B_A 1
 	PUSH B_A
-	MOV D_A name_a
+	CMP
+	JL 1245_1_next
+	MOV D_A fibonachi_prev_num
+	PUSH D_A
+	CALL end
+	POP B_A
+	JN 1245_end
+@1245_1_next:
+@1245_end:
+	MOV D_A fibonachi_input_num
+	PUSH D_A
+	MOV D_A fibonachi_i
+	PUSH D_A
+	MOV D_A fibonachi_prev_num
+	PUSH D_A
+	MOV D_A fibonachi_cur_num
+	PUSH D_A
+RET
+function next_fibonachi
+	next_fibonachi_tmp DD
+	POP D_A
+	MOV next_fibonachi_tmp D_A
+	next_fibonachi_input_num DD
+	POP D_A
+	MOV next_fibonachi_input_num D_A
+	next_fibonachi_i DD
+	POP D_A
+	MOV next_fibonachi_i D_A
+	next_fibonachi_prev_num DD
+	POP D_A
+	MOV next_fibonachi_prev_num D_A
+	next_fibonachi_cur_num DD
+	POP D_A
+	MOV next_fibonachi_cur_num D_A
+	MOV D_A next_fibonachi_i
+	PUSH D_A
+	MOV P_R 1.000000
+	PUSH P_R
+	ADD
+	POP D_A
+	MOV next_fibonachi_i D_A
+	MOV D_A next_fibonachi_cur_num
+	PUSH D_A
+	POP D_A
+	MOV next_fibonachi_tmp D_A
+	MOV D_A next_fibonachi_tmp
+	PUSH D_A
+	MOV D_A next_fibonachi_prev_num
+	PUSH D_A
+	ADD
+	POP D_A
+	MOV next_fibonachi_cur_num D_A
+	MOV D_A next_fibonachi_tmp
+	PUSH D_A
+	POP D_A
+	MOV next_fibonachi_prev_num D_A
+	MOV D_A next_fibonachi_cur_num
+	PUSH D_A
+	MOV D_A next_fibonachi_prev_num
+	PUSH D_A
+	MOV D_A next_fibonachi_i
+	PUSH D_A
+	MOV D_A next_fibonachi_input_num
+	PUSH D_A
+	CALL fibonachi
+	POP B_A
+	POP B_A
+	POP B_A
+	POP B_A
+	MOV D_A next_fibonachi_tmp
+	PUSH D_A
+	MOV D_A next_fibonachi_input_num
+	PUSH D_A
+	MOV D_A next_fibonachi_i
+	PUSH D_A
+	MOV D_A next_fibonachi_prev_num
+	PUSH D_A
+	MOV D_A next_fibonachi_cur_num
+	PUSH D_A
+RET
+function end
+	end_out_num DD
+	POP D_A
+	MOV end_out_num D_A
+	MOV P_R end_out_num
+	PUSH P_R
+	OUT
+	MOV D_A end_out_num
 	PUSH D_A
 RET
 END
