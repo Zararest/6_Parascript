@@ -84,6 +84,11 @@ Equality::Equality(Ioperator* new_left, bool is_equal, Ioperator* new_right): Io
     equal = is_equal;
 }
 
+bool Equality::is_equal(){
+
+    return equal;
+}
+
 void Equality::print_graphviz(FILE* out_file) const{
 
     if (equal){
@@ -122,6 +127,11 @@ void Greater::print_graphviz(FILE* out_file) const{
     print_nodes(out_file);
 }
 
+bool Greater::is_and_equal(){
+
+    return and_equal;
+}
+
 void Greater::get_request(Irequest* cur_req){ 
 
     cur_req->process_request(this);
@@ -132,6 +142,11 @@ void Greater::get_request(Irequest* cur_req){
 Less::Less(Ioperator* new_left, bool is_equal, Ioperator* new_right): Ioperator(new_left, new_right){
 
     and_equal = is_equal;
+}
+
+bool Less::is_and_equal(){
+
+    return and_equal;
 }
 
 void Less::print_graphviz(FILE* out_file) const{

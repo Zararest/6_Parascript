@@ -147,6 +147,7 @@ public:
     void add_loop_body(Call* new_loop_body);
 
     void transfer_request_call(Irequest* cur_req);
+    void transfer_request_condition(Irequest* cur_req);
 
     void print_graphviz(FILE* out_file) const override;
     void get_request(Irequest* cur_req) override;
@@ -183,6 +184,8 @@ public:
     void add_r_value(Ioperator* new_r_value);
 
     char* get_var_name_copy() const;
+
+    void transfer_request_r_value(Irequest* cur_req);
 
     void print_graphviz(FILE* out_file) const override;
     void get_request(Irequest* cur_req) override;

@@ -53,6 +53,11 @@ Num::Num(double new_value){
     value = new_value;
 }
 
+double Num::get_value(){
+
+    return value;
+}
+
 void Num::print_graphviz(FILE* out_file) const{
 
     fprintf(out_file, "\"%p\" [label = \"%lf\" fillcolor=yellow]\n", this, value);

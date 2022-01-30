@@ -20,7 +20,13 @@ void Compiler::generate_asm_code(const char* out_file_name){
         return;
     }
 
-    Asm_code_req new_req(asm_file);
+    std::vector<Statement_info> statements;
+
+    Statement_info_req stat_vars(statements);
+
+    synt_tree_root->get_request(&stat_vars);
+
+    Asm_code_req new_req(asm_file, statements);
 
     synt_tree_root->get_request(&new_req);
 

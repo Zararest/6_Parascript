@@ -72,6 +72,8 @@ public:
 
     Equality& operator =(const Equality&) = delete;
 
+    bool is_equal();
+
     void print_graphviz(FILE* out_file) const override;
     void get_request(Irequest* cur_req) override;
 };
@@ -90,6 +92,8 @@ public:
 
     Equality& operator =(const Equality&) = delete;
 
+    bool is_and_equal();
+
     void print_graphviz(FILE* out_file) const override;
     void get_request(Irequest* cur_req) override;
 };
@@ -107,6 +111,8 @@ public:
     ~Less() = default;
 
     Less& operator =(const Less&) = delete;
+
+    bool is_and_equal();
 
     void print_graphviz(FILE* out_file) const override;
     void get_request(Irequest* cur_req) override;

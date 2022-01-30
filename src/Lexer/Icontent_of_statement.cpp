@@ -343,7 +343,24 @@ void Cycle::add_loop_body(Call* new_loop_body){
 
 void Cycle::transfer_request_call(Irequest* cur_req){
 
-    loop_body->get_request(cur_req);
+    if (loop_body != nullptr){
+
+        loop_body->get_request(cur_req);
+    } else{
+
+        cur_req->terminal_request();
+    }
+}
+
+void Cycle::transfer_request_condition(Irequest* cur_req){
+
+    if (condition != nullptr){
+
+        condition->get_request(cur_req);
+    } else{
+
+        cur_req->terminal_request();
+    }
 }
 
 void Cycle::print_graphviz(FILE* out_file) const{
@@ -386,6 +403,17 @@ void Assign::add_r_value(Ioperator* new_r_value){
 char* Assign::get_var_name_copy() const{
 
     return l_value->get_name_copy();
+}
+
+void Assign::transfer_request_r_value(Irequest* cur_req){
+
+    if (r_value != nullptr){
+
+        r_value->get_request(cur_req);
+    } else{
+
+        cur_req->terminal_request();
+    }
 }
 
 void Assign::print_graphviz(FILE* out_file) const{

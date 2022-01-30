@@ -51,6 +51,8 @@ public:
 
     Num& operator =(const Num&) = delete;
 
+    double get_value();
+
     void print_graphviz(FILE* out_file) const override;
     void get_request(Irequest* cur_req) override;
 };

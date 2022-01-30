@@ -13,6 +13,7 @@ add_executable(Compiler ${LEXER_DIR}Lexer.cpp
                         ${PARCER_DIR}Parcer.cpp
                         ${COMPILER_DIR}Compiler.cpp
                         ${COMPILER_DIR}Asm_request.cpp
+                        ${COMPILER_DIR}Statements_request.cpp
                         main.cpp)
 
 add_executable(Lexer main.cpp src/Lexer/Lexer.cpp src/Lexer/Icontent_of_statement.cpp

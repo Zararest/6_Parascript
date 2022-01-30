@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-Asm_code_req::Asm_code_req(FILE* new_asm_file){
+Asm_code_req::Asm_code_req(FILE* new_asm_file, std::vector<Statement_info>& statments_info): statements(statments_info){
 
     asm_file = new_asm_file;
 }
@@ -17,11 +17,12 @@ void Asm_code_req::process_request(Statement* cur_node){
     num_of_accesses++;
 
     cur_statment_name = cur_node->get_name_copy();
+    bool this_is_first = false;
 
     if (first_statement){
 
         fprintf(asm_file, "CALL %s\n\n", cur_statment_name);
-
+        this_is_first = true;
         first_statement = false;
     }
 
@@ -29,10 +30,10 @@ void Asm_code_req::process_request(Statement* cur_node){
 
     cur_init_list = cur_node->get_init_list_ptr();
 
-    if (stack_size < cur_init_list->num_of_vars){
+    /*if (stack_size < cur_init_list->num_of_vars){
 
-        complite_init_list(cur_init_list->num_of_vars - stack_size);
-    }
+        complete_init_list(cur_init_list->num_of_vars - stack_size);
+    }*/
 
     init_vars(*cur_init_list);
 
@@ -46,6 +47,11 @@ void Asm_code_req::process_request(Statement* cur_node){
     cur_statment_name = nullptr;
 
     cur_node->transfer_request(this);
+
+    if (this_is_first){
+
+        fprintf(asm_file, "END\n");
+    }
 }
 
 /**
@@ -55,36 +61,9 @@ void Asm_code_req::process_request(Statement* cur_node){
  */
 void Asm_code_req::dump_vars(const Initialization_list& init_list){
 
-    num_of_ret_vars = 0;
+    for (int i = init_list.num_of_vars - 1; i >= 0; i--){ //-----------------------------------------------------!!!
 
-    for (int i = init_list.num_of_vars - 1; i >= 0; i--){
-
-        switch (init_list.list_of_vars[i].type){
-        
-            case T_char:
-                fprintf(asm_file, "\tMOV B_A %s_%s\n", cur_statment_name, init_list.list_of_vars[i].name);
-                fprintf(asm_file, "\tPUSH B_A\n");
-                break;
-
-            case T_int:
-                fprintf(asm_file, "\tMOV D_A %s_%s\n", cur_statment_name, init_list.list_of_vars[i].name);
-                fprintf(asm_file, "\tPUSH D_A\n");
-                break;
-
-            case T_float:
-                fprintf(asm_file, "\tMOV P_F %s_%s\n", cur_statment_name, init_list.list_of_vars[i].name);
-                fprintf(asm_file, "\tPUSH P_F\n");
-                break;
-
-            case T_arr:
-                fprintf(asm_file, "Эта функция еще не поддерживаается\n");
-                break;
-
-            case T_expr:
-                fprintf(asm_file, "Эта функция еще не поддерживаается\n");
-                break;
-        }
-        num_of_ret_vars++;
+        push_var(init_list.list_of_vars[i].name);
     }
 }
 
@@ -93,22 +72,22 @@ void Asm_code_req::dump_vars(const Initialization_list& init_list){
  * 
  * @param num_of_empty_vars 
  */
-void Asm_code_req::complite_init_list(int num_of_empty_vars){
+void Asm_code_req::complete_init_list(int num_of_empty_vars){
+
+    assert(num_of_empty_vars >= 0);
+    if (num_of_empty_vars == 0){ return; }
 
     fprintf(asm_file, "\tMOV W_A 0\n");
 
     for (int i = 0; i < num_of_empty_vars; i++){
 
         fprintf(asm_file, "\tPUSH W_A\n");
-        stack_size++;
     }
 }
 
 void Asm_code_req::init_vars(const Initialization_list& init_list){
 
     for (int i = init_list.num_of_vars - 1; i >= 0; i--){
-
-        assert(stack_size > 0);
 
         switch (init_list.list_of_vars[i].type){
         
@@ -138,8 +117,6 @@ void Asm_code_req::init_vars(const Initialization_list& init_list){
                 fprintf(asm_file, "Эта функция еще не поддерживаается\n");
                 break;
         }
-
-        stack_size--;
     }
 }
 
@@ -177,10 +154,10 @@ void Asm_code_req::process_request(If* cur_node){
         cur_node->transfer_request_call(this, i);
 
         fprintf(asm_file, "\tJN %i_end\n", cur_file_pos); //прыжок в конец
-        fprintf(asm_file, "\t@%i_%i_next\n", cur_file_pos, i);  //метка для следующего вызова
+        fprintf(asm_file, "@%i_%i_next\n", cur_file_pos, i);  //метка для следующего вызова
     }
 
-    fprintf(asm_file, "\t@%i_end\n", cur_file_pos);
+    fprintf(asm_file, "@%i_end\n", cur_file_pos);
 
     cur_node->transfer_request(this); //вызов следующего выражения
 }   
@@ -290,7 +267,9 @@ void Asm_code_req::process_request(Call* cur_node){
 
 void Asm_code_req::get_vars(Call* cur_call){
 
+    char* call_stat_name = cur_call->get_stat_name_copy();
     int num_of_call_vars = cur_call->get_num_of_vars();
+    int num_of_ret_vars = get_number_of_ret_vars(call_stat_name);
 
     for (int i = num_of_ret_vars - 1; i >= 0; i--){
 
@@ -299,35 +278,7 @@ void Asm_code_req::get_vars(Call* cur_call){
             char* cur_var_name = cur_call->get_var_name_copy(i);
             assert(cur_var_name != nullptr);
 
-            switch (get_var_type(cur_var_name)){
-        
-                case T_char:
-                    fprintf(asm_file, "\tPOP B_A\n");
-                    fprintf(asm_file, "\tMOV %s_%s B_A\n", cur_statment_name, cur_var_name);
-                    break;
-
-                case T_int:
-                    fprintf(asm_file, "\tPOP D_A\n");
-                    fprintf(asm_file, "\tMOV %s_%s D_A\n", cur_statment_name, cur_var_name);
-                    break;
-
-                case T_float:
-                    fprintf(asm_file, "\tPOP P_F\n");
-                    fprintf(asm_file, "\tMOV %s_%s P_F\n", cur_statment_name, cur_var_name);
-                    break;
-
-                case T_arr:
-                    fprintf(asm_file, "Эта функция еще не поддерживаается\n");
-                    break;
-
-                case T_expr:
-                    fprintf(asm_file, "Эта функция еще не поддерживаается\n");
-                    break;
-
-                case -1:
-                    printf("error 326\n");
-                    break;
-            }
+            pop_var(cur_var_name);
 
             delete[] cur_var_name;
             cur_var_name = nullptr;
@@ -336,54 +287,48 @@ void Asm_code_req::get_vars(Call* cur_call){
 
             fprintf(asm_file, "\tPOP B_A\n");
         }
-
-        stack_size--;
     }
+
+    delete[] call_stat_name;
+}
+
+int Asm_code_req::get_number_of_ret_vars(char* statement_name) const{
+
+    for (int i = 0; i < statements.size(); i++){
+
+        if (statements[i].cmp_name(statement_name) == 0){
+
+            return statements[i].get_number_of_ret_vars();
+        }
+    }
+
+    printf("error no statement\n");
+
+    return -1;
 }
 
 void Asm_code_req::pass_vars(Call* cur_call){
 
+    char* call_stat_name = cur_call->get_stat_name_copy();
     int num_of_vars = cur_call->get_num_of_vars();
+    int num_of_statement_vars = get_number_of_ret_vars(call_stat_name);
+
+    assert(num_of_vars <= num_of_statement_vars);
 
     for (int i = 0; i < num_of_vars; i++){
 
         char* cur_var_name = cur_call->get_var_name_copy(i);
         assert(cur_var_name != nullptr);
 
-        switch (get_var_type(cur_var_name)){
-
-            case T_char:
-                fprintf(asm_file, "\tMOV B_A %s_%s\n", cur_statment_name, cur_var_name);
-                fprintf(asm_file, "\tPUSH B_A\n");
-                break;
-
-            case T_int:
-                fprintf(asm_file, "\tMOV D_A %s_%s\n", cur_statment_name, cur_var_name);
-                fprintf(asm_file, "\tPUSH D_A\n");
-                break;
-
-            case T_float:
-                fprintf(asm_file, "\tMOV P_F %s_%s\n", cur_statment_name, cur_var_name);
-                fprintf(asm_file, "\tPUSH P_F\n");
-                break;
-
-            case T_arr:
-                fprintf(asm_file, "Эта функция еще не поддерживаается\n");
-                break;
-
-            case T_expr:
-                fprintf(asm_file, "Эта функция еще не поддерживаается\n");
-                break;
-
-            case -1:
-                printf("error 379\n");
-        }
+        push_var(cur_var_name);
 
         delete[] cur_var_name;
         cur_var_name = nullptr;
-
-        stack_size++;
     }
+
+    complete_init_list(num_of_statement_vars - num_of_vars);
+
+    delete[] call_stat_name;
 }
 
 DataType Asm_code_req::get_var_type(char* var_name) const{
@@ -400,3 +345,309 @@ DataType Asm_code_req::get_var_type(char* var_name) const{
 
     return -1;
 }
+
+void Asm_code_req::process_request(Assign* cur_node){
+
+    num_of_accesses++;
+
+    char* var_name = cur_node->get_var_name_copy();
+
+    cur_node->transfer_request_r_value(this);
+
+    pop_var(var_name);
+
+    delete[] var_name;
+
+    cur_node->transfer_request(this);
+}
+
+void Asm_code_req::process_request(Cycle* cur_node){
+
+    num_of_accesses++;
+
+    int cur_file_pos = ftell(asm_file);
+    int prev_num_of_accesses = num_of_accesses;
+
+    fprintf(asm_file, "@%i_loop_start\n", cur_file_pos);
+
+    cur_node->transfer_request_condition(this);
+
+    if (prev_num_of_accesses == num_of_accesses){
+
+        fprintf(asm_file, "\tMOV D_E 0\n");
+        fprintf(asm_file, "\tPUSH D_E\n");
+    }
+
+    fprintf(asm_file, "\tMOV D_E 1\n");
+    fprintf(asm_file, "\tPUSH D_E\n");
+    fprintf(asm_file, "\tCMP\n");
+    fprintf(asm_file, "\tJL %i_end\n", cur_file_pos);
+    fprintf(asm_file, "\tJG %i_end\n", cur_file_pos);
+
+    cur_node->transfer_request_call(this);
+
+    fprintf(asm_file, "\tJN %i_loop_start\n", cur_file_pos);
+    fprintf(asm_file, "@%i_end\n", cur_file_pos);
+
+    cur_node->transfer_request(this);
+}
+
+void Asm_code_req::process_request(Return_statement* cur_node){
+
+    num_of_accesses++;
+
+    char* var_name = cur_node->get_var_name_copy();
+
+    cur_node->transfer_request_call(this);
+
+    /*if (stack_size == 0){ //тут нужна проверка
+
+        fprintf(asm_file, "\tMOV D_E 0\n");
+        fprintf(asm_file, "\tPUSH D_E\n");
+        stack_size++;
+    }*/
+
+    pop_var(var_name); 
+
+    delete[] var_name;
+
+    cur_node->transfer_request(this);
+}
+
+void Asm_code_req::process_request(Statements_return* cur_node){
+
+    num_of_accesses++;
+
+    char* var_name = cur_node->get_var_name_copy();
+
+    push_var(var_name);
+
+    delete[] var_name;
+
+    cur_node->transfer_request(this);
+}
+
+void Asm_code_req::push_var(char* var_name){
+
+    switch (get_var_type(var_name)){
+
+        case T_char:
+            fprintf(asm_file, "\tMOV B_A %s_%s\n", cur_statment_name, var_name);
+            fprintf(asm_file, "\tPUSH B_A\n");
+            break;
+
+        case T_int:
+            fprintf(asm_file, "\tMOV D_A %s_%s\n", cur_statment_name, var_name);
+            fprintf(asm_file, "\tPUSH D_A\n");
+            break;
+
+        case T_float:
+            fprintf(asm_file, "\tMOV P_F %s_%s\n", cur_statment_name, var_name);
+            fprintf(asm_file, "\tPUSH P_F\n");
+            break;
+
+        case T_arr:
+            fprintf(asm_file, "Эта функция еще не поддерживаается\n");
+            break;
+
+        case T_expr:
+            fprintf(asm_file, "Эта функция еще не поддерживаается\n");
+            break;
+
+        case -1:
+            printf("undef type\n");
+            exit(0);
+            break;
+    }
+}
+
+void Asm_code_req::pop_var(char* var_name){
+
+    switch(get_var_type(var_name)){
+
+        case T_char:
+            fprintf(asm_file, "\tPOP B_A\n");
+            fprintf(asm_file, "\tMOV %s_%s B_A\n", cur_statment_name, var_name);
+            break;
+
+        case T_int:
+            fprintf(asm_file, "\tPOP D_A\n");
+            fprintf(asm_file, "\tMOV %s_%s D_A\n", cur_statment_name, var_name);
+            break;
+
+        case T_float:
+            fprintf(asm_file, "\tPOP P_F\n");
+            fprintf(asm_file, "\tMOV %s_%s P_F\n", cur_statment_name, var_name);
+            break;
+
+        case T_arr:
+            fprintf(asm_file, "Эта функция еще не поддерживаается\n");
+            break;
+
+        case T_expr:
+            fprintf(asm_file, "Эта функция еще не поддерживаается\n");
+            break;
+
+        case -1:
+            printf("undef type\n");
+            exit(0);
+            break;
+    }
+}
+
+void Asm_code_req::process_request(Bin_minus* cur_node){
+
+    num_of_accesses++;
+
+    cur_node->transfer_request_left(this);
+    cur_node->transfer_request_right(this);
+
+    fprintf(asm_file, "\tSUB\n");
+}
+
+void Asm_code_req::process_request(Bin_plus* cur_node){
+
+    num_of_accesses++;
+
+    cur_node->transfer_request_left(this);
+    cur_node->transfer_request_right(this);
+
+    fprintf(asm_file, "\tADD\n");
+}
+
+void Asm_code_req::process_request(Mul* cur_node){
+
+    num_of_accesses++;
+
+    cur_node->transfer_request_left(this);
+    cur_node->transfer_request_right(this);
+
+    fprintf(asm_file, "\tMUL\n");
+}
+
+void Asm_code_req::process_request(Div* cur_node){
+
+    num_of_accesses++;
+
+    cur_node->transfer_request_left(this);
+    cur_node->transfer_request_right(this);
+
+    fprintf(asm_file, "\tDIV\n");
+}
+
+void Asm_code_req::process_request(Less* cur_node){
+
+    num_of_accesses++;
+
+    cur_node->transfer_request_left(this);
+    cur_node->transfer_request_right(this);
+
+    int cur_file_pos = ftell(asm_file);
+
+    fprintf(asm_file, "\tCMP\n");
+    fprintf(asm_file, "\tJL %i_zero\n", cur_file_pos);
+
+    if (!cur_node->is_and_equal()){
+
+        fprintf(asm_file, "\tJE %i_zero\n", cur_file_pos);
+    }
+
+    fprintf(asm_file, "\tMOV D_E 1\n");
+    fprintf(asm_file, "\tPUSH D_E\n");
+    fprintf(asm_file, "\tJN %i_end\n", cur_file_pos);
+
+    fprintf(asm_file, "@%i_zero\n", cur_file_pos);
+    fprintf(asm_file, "\tMOV D_E 0\n");
+    fprintf(asm_file, "\tPUSH D_E\n");
+
+    fprintf(asm_file, "@%i_end\n", cur_file_pos);
+}
+
+void Asm_code_req::process_request(Greater* cur_node){
+
+    num_of_accesses++;
+
+    cur_node->transfer_request_left(this);
+    cur_node->transfer_request_right(this);
+
+    int cur_file_pos = ftell(asm_file);
+
+    fprintf(asm_file, "\tCMP\n");
+    fprintf(asm_file, "\tJG %i_zero\n", cur_file_pos);
+
+    if (!cur_node->is_and_equal()){
+
+        fprintf(asm_file, "\tJE %i_zero\n", cur_file_pos);
+    }
+
+    fprintf(asm_file, "\tMOV D_E 1\n");
+    fprintf(asm_file, "\tPUSH D_E\n");
+    fprintf(asm_file, "\tJN %i_end\n", cur_file_pos);
+
+    fprintf(asm_file, "@%i_zero\n", cur_file_pos);
+    fprintf(asm_file, "\tMOV D_E 0\n");
+    fprintf(asm_file, "\tPUSH D_E\n");
+
+    fprintf(asm_file, "@%i_end\n", cur_file_pos);
+}
+
+void Asm_code_req::process_request(Equality* cur_node){
+
+    num_of_accesses++;
+
+    cur_node->transfer_request_left(this);
+    cur_node->transfer_request_right(this);
+
+    int cur_file_pos = ftell(asm_file);
+
+    fprintf(asm_file, "\tCMP\n");
+
+    if (cur_node->is_equal()){
+
+        fprintf(asm_file, "\tJE %i_one\n", cur_file_pos);
+        fprintf(asm_file, "\tMOV D_E 0\n");
+        fprintf(asm_file, "\tPUSH D_E\n");
+        fprintf(asm_file, "\tJN %i_end\n", cur_file_pos);
+
+        fprintf(asm_file, "@%i_one\n", cur_file_pos);
+        fprintf(asm_file, "\tMOV D_E 1\n");
+        fprintf(asm_file, "\tPUSH D_E\n");
+
+    } else{
+
+        fprintf(asm_file, "\tJE %i_zero\n", cur_file_pos);
+        fprintf(asm_file, "\tMOV D_E 1\n");
+        fprintf(asm_file, "\tPUSH D_E\n");
+        fprintf(asm_file, "\tJN %i_end\n", cur_file_pos);
+
+        fprintf(asm_file, "@%i_zero\n", cur_file_pos);
+        fprintf(asm_file, "\tMOV D_E 0\n");
+        fprintf(asm_file, "\tPUSH D_E\n");
+    }
+
+    fprintf(asm_file, "@%i_end\n", cur_file_pos);
+}
+
+void Asm_code_req::process_request(Var* cur_node){
+
+    num_of_accesses++;
+
+    char* var_name = cur_node->get_name_copy();
+
+    push_var(var_name);
+
+    delete[] var_name;
+}
+
+void Asm_code_req::process_request(Num* cur_node){
+
+    num_of_accesses++;
+
+    double cur_val = cur_node->get_value();
+
+    fprintf(asm_file, "\tMOV P_R %lf\n", cur_val);
+    fprintf(asm_file, "\tPUSH P_R\n");
+}
+
+
+
