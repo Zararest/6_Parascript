@@ -22,5 +22,7 @@ void Compiler::generate_asm_code(const char* out_file_name){
 
     Asm_code_req new_req(asm_file);
 
+    synt_tree_root->get_request(&new_req);
+
     fclose(asm_file);
 }

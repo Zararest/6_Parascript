@@ -30,6 +30,9 @@ public:
 
     Var& operator =(const Var&) = delete;
 
+    char* get_name_copy() const;
+    bool is_inner() const;
+
     void print_graphviz(FILE* out_file) const override;
     void get_request(Irequest* cur_req) override;
 };

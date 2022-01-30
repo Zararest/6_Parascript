@@ -83,8 +83,10 @@ public:
     bool add_init_list(Initialization_list new_init_list);
     bool add_name(char* name);
 
-    void print_name(FILE* out_file){};
-    const Initialization_list& get_init_list_link(){};
+    char* get_name_copy() const;
+    const Initialization_list* get_init_list_ptr() const;
+
+    void transfer_request_fir_expr(Irequest* cur_req);
 
     void print_graphviz(FILE* out_file) const override;
     void get_request(Irequest* cur_req) override;

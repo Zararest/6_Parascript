@@ -45,7 +45,10 @@ public:
     void add_name(char* new_name);
     void add_new_var(Var* new_var);
 
-    void print_name(FILE* out_file) const;
+    char* get_stat_name_copy() const;
+    char* get_var_name_copy(int num_of_var) const;
+    int get_num_of_vars() const;
+    bool is_inner_var(int num_of_var) const;
 
     void print_graphviz(FILE* out_file) const override;
     void get_request(Irequest* cur_req) override;
@@ -69,6 +72,10 @@ public:
     void add_call(Call* new_call);
     void add_var(Var* new_var);
 
+    char* get_var_name_copy() const;
+
+    void transfer_request_call(Irequest* cur_req);
+
     void print_graphviz(FILE* out_file) const override;
     void get_request(Irequest* cur_req) override;
 };
@@ -86,6 +93,8 @@ public:
     ~Statements_return();
 
     void add_var(Var* new_var);
+
+    char* get_var_name_copy() const;
 
     void print_graphviz(FILE* out_file) const override;
     void get_request(Irequest* cur_req) override;
@@ -110,7 +119,7 @@ public:
     void add_condition(Ioperator* new_condition);
     void add_new_call(Call* new_call);
 
-    bool print_call_name(int num_of_call, FILE* out_file);
+    char* get_call_name_copy(int num_of_call) const;
     int get_num_of_calls();
     void transfer_request_condition(Irequest* cur_req);
     void transfer_request_call(Irequest* cur_req, int num_of_call);
@@ -136,6 +145,8 @@ public:
 
     void add_condition(Ioperator* new_condition);
     void add_loop_body(Call* new_loop_body);
+
+    void transfer_request_call(Irequest* cur_req);
 
     void print_graphviz(FILE* out_file) const override;
     void get_request(Irequest* cur_req) override;
@@ -170,7 +181,9 @@ public:
 
     void add_l_value(Var* new_l_value);
     void add_r_value(Ioperator* new_r_value);
-    
+
+    char* get_var_name_copy() const;
+
     void print_graphviz(FILE* out_file) const override;
     void get_request(Irequest* cur_req) override;
 };

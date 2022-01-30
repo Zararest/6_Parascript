@@ -1,5 +1,7 @@
 #include "headers/Ioperand.h"
 
+#include <cassert>
+
 /**
  * @brief Нет копирования имени
  * 
@@ -20,6 +22,23 @@ Var::~Var(){
 void Var::print_graphviz(FILE* out_file) const{
 
     fprintf(out_file, "\"%p\" [label = \"%s\" fillcolor=yellow]\n", this, name);
+}
+
+char* Var::get_name_copy() const{
+
+    assert(name != nullptr);
+    int name_size = strlen(name);
+    assert(name_size > 0);
+
+    char* name_copy = new char[name_size];
+    memcpy(name_copy, name, name_size);
+
+    return name_copy;
+}
+
+bool Var::is_inner() const{
+
+    return inner;
 }
 
 void Var::get_request(Irequest* cur_req){ 

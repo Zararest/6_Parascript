@@ -251,11 +251,11 @@ DataType Lexer::get_type(){
 
     if (cur_pos == tokens.end()){ error("expected variable type"); }
 
-    if (strcmp("char", cur_pos->lexem) == 0){ return T_char; }
-    if (strcmp("int", cur_pos->lexem) == 0){ return T_int; }
-    if (strcmp("float", cur_pos->lexem) == 0){ return T_float; }
-    if (strcmp("arr", cur_pos->lexem) == 0){ return T_arr; }
-    if (strcmp("expr", cur_pos->lexem) == 0){ return T_expr; }
+    if (strcmp("char", cur_pos->lexem) == 0){ cur_pos++; return T_char; }
+    if (strcmp("int", cur_pos->lexem) == 0){ cur_pos++; return T_int; }
+    if (strcmp("float", cur_pos->lexem) == 0){ cur_pos++; return T_float; }
+    if (strcmp("arr", cur_pos->lexem) == 0){ cur_pos++; return T_arr; }
+    if (strcmp("expr", cur_pos->lexem) == 0){ cur_pos++; return T_expr; }
 
     error("incorrect type name");
     return -1;
@@ -313,7 +313,6 @@ Initialization_list Lexer::get_init_list(){
     if (cur_pos == tokens.end()){ error("expected Initialization list"); }
     if (strcmp(cur_pos->lexem, "[") != 0){ return Initialization_list{0, nullptr}; }
 
-    int num_of_vars = 0;
     char* new_var_name = nullptr;
     DataType new_var_type;
     Initialization_list ret_val;
@@ -327,7 +326,6 @@ Initialization_list Lexer::get_init_list(){
         new_var_name = get_var_name();
 
         add_new_var(ret_val, new_var_type, new_var_name);
-        cur_pos++;
 
         check_end_of_tokens();
 

@@ -17,10 +17,21 @@ class Asm_code_req: public Irequest{
     int num_of_ret_vars = 0;
     int stack_size = 0;
     bool first_statement = true;
+    char* cur_statment_name = nullptr;
+    const Initialization_list* cur_init_list = nullptr;
+
+    void get_char(Call* cur_call);
+    void get_int(Call* cur_call);
+    void get_float(Call* cur_call);
+    void put_char(Call* cur_call);
+    void put_float(Call* cur_call);
 
     void complite_init_list(int num_of_empty_vars);
     void init_vars(const Initialization_list& init_list);
     void dump_vars(const Initialization_list& init_list);
+    DataType get_var_type(char* var_name) const;
+    void pass_vars(Call* cur_call);
+    void get_vars(Call* cur_call);
 
 public:
 
@@ -32,6 +43,7 @@ public:
 
     void process_request(Statement* cur_node);
     void process_request(If* cur_node);
+    void process_request(Call* cur_node);
 };
 
 class Compiler{

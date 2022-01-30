@@ -1,0 +1,31 @@
+CALL while_body
+
+function while_body
+	MOV W_A 0
+	PUSH W_A
+	while_body_a DD
+	POP D_A
+	MOV while_body_a D_A
+	MOV D_A while_body_a
+	PUSH D_A
+RET
+function name
+	MOV W_A 0
+	PUSH W_A
+	PUSH W_A
+	name_b DB
+	POP B_A
+	MOV name_b B_A
+	name_a DD
+	POP D_A
+	MOV name_a D_A
+	MOV D_A name_a
+	PUSH D_A
+	CALL while_body
+	POP D_A
+	MOV name_a D_A
+	MOV B_A name_b
+	PUSH B_A
+	MOV D_A name_a
+	PUSH D_A
+RET

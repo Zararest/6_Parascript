@@ -1,5 +1,7 @@
 #include "headers/Icontent_of_statement.h"
 
+#include <cassert>
+
 void Icontent_of_statement::transfer_request(Irequest* cur_req){
 
     if (next_expr != nullptr){
@@ -75,6 +77,46 @@ void Call::add_new_var(Var* new_var){
     arr_of_vars = new_arr_of_vars;
 }
 
+char* Call::get_stat_name_copy() const{
+
+    assert(statement_name != nullptr);
+    int name_size = strlen(statement_name);
+    assert(name_size > 0);
+
+    char* name_copy = new char[name_size];
+    memcpy(name_copy, statement_name, name_size);
+
+    return name_copy;
+}
+
+char* Call::get_var_name_copy(int num_of_var) const{
+
+    if (num_of_var < num_of_vars){
+
+        return arr_of_vars[num_of_var]->get_name_copy();
+    } else{
+
+        return nullptr;
+    }
+}
+
+int Call::get_num_of_vars() const{
+
+    return num_of_vars;
+}
+
+bool Call::is_inner_var(int num_of_var) const{
+
+    if (num_of_var < num_of_vars){
+
+        return arr_of_vars[num_of_var]->is_inner();
+    } else{
+
+        return false;
+    }
+}
+
+
 void Call::print_graphviz(FILE* out_file) const{
 
     fprintf(out_file, "\"%p\" [label = \"Call:%s\" fillcolor=lightblue]\n", this, statement_name);
@@ -113,6 +155,16 @@ void Return_statement::add_var(Var* new_var){
     dest_var = new_var;
 }
 
+char* Return_statement::get_var_name_copy() const{
+
+    return dest_var->get_name_copy();
+}
+
+void Return_statement::transfer_request_call(Irequest* cur_req){
+
+    ret_stat->get_request(cur_req);
+}
+
 void Return_statement::print_graphviz(FILE* out_file) const{
 
     fprintf(out_file, "\"%p\" [label = \"Return\" fillcolor=orange]\n", this);
@@ -148,6 +200,11 @@ void Statements_return::add_var(Var* new_var){
 
     delete ret_var;
     ret_var = new_var;
+}
+
+char* Statements_return::get_var_name_copy() const{
+
+    return ret_var->get_name_copy();
 }
 
 void Statements_return::print_graphviz(FILE* out_file) const{
@@ -205,14 +262,14 @@ void If::add_new_call(Call* new_call){
     arr_of_calls = new_arr_of_calls;
 }
 
-bool If::print_call_name(int num_of_call, FILE* out_file){
+char* If::get_call_name_copy(int num_of_call) const{
 
     if (num_of_call < num_of_calls){
 
-        arr_of_calls[num_of_call]->print_name(out_file);
+        return arr_of_calls[num_of_call]->get_stat_name_copy();
     } else{
 
-        return false;
+        return nullptr;
     }
 }
 
@@ -284,6 +341,11 @@ void Cycle::add_loop_body(Call* new_loop_body){
     loop_body = new_loop_body;
 }
 
+void Cycle::transfer_request_call(Irequest* cur_req){
+
+    loop_body->get_request(cur_req);
+}
+
 void Cycle::print_graphviz(FILE* out_file) const{
 
     fprintf(out_file, "\"%p\" [label = \"While\" fillcolor=lightblue]\n", this);
@@ -319,6 +381,11 @@ void Assign::add_r_value(Ioperator* new_r_value){
 
         delete r_value;
         r_value = new_r_value;
+}
+
+char* Assign::get_var_name_copy() const{
+
+    return l_value->get_name_copy();
 }
 
 void Assign::print_graphviz(FILE* out_file) const{

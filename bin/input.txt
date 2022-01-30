@@ -2,7 +2,7 @@
 {while_body}    <[int a] a = a + 1; >
 
 {name} <[int a, char b]
-        a = 1 + b;
-        while (a < 10) while_body->[inner a] >
+
+        while_body->[inner a] >
 
 

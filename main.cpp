@@ -15,5 +15,7 @@ int main(int, char**){
     Lexer new_tree(tokens);
 
     Compiler new_compile(new_tree.get_syntax_tree());
+
+    new_compile.generate_asm_code("../bin/asm.txt");
 }   
 
